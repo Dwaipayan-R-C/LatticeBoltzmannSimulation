@@ -16,33 +16,34 @@ from scipy.interpolate import make_interp_spline
 from matplotlib import animation
 
 
-"""The function that simulates Shear wave graph"""
+
 def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir: str, save_every, steps, exp_type: str):
-    """Plot Global Def"""
+    """ Calculates the shear wave for Nx by Ny D2Q9 lattice"""
+
     plt.rcParams.update({'font.size': 16})
     plt.rcParams["font.family"] = "Times New Roman"
-    fig1, ax1 = plt.subplots() #Assigned to continuous flow of velocity
+    fig1, ax1 = plt.subplots() #Assigned to continuous flow of velocity    
     fig2, ax2 = plt.subplots() #Assigned to view velocity stream or density flow
     fig3, ax3 = plt.subplots() #Assigned to sinusoidal decay over time
     fig4, ax4 = plt.subplots() #Assigned to intial density / velocity
     figs, axes = [fig1, fig2,fig3,fig4], [ax1, ax2,ax3,ax4]  
-
-    """Define Analytical Velocity value"""
+    
     def instant_theoretical_velocity(v):
+        """Define Analytical Velocity value"""
         y = np.exp(-v*(2*np.pi/Ny) ** 2)
         return y
-
-    """Visual function for animate [Refer to animate]"""
+    
     def visualize_density(i):
+        """Visual function for animate [Refer to animate]"""
         axes[0].scatter(x,y,c=density_animation[i], vmin=density_animation[i].min(), vmax=density_animation[i].max())
-
-    """Creates density animation"""
+    
     def animate(density_animation):
+        """Creates density animation"""
         anim = animation.FuncAnimation(figs[0],visualize_density,repeat=False,frames=len(density_animation))
         anim.save('density_animation.gif',writer='imagemagic', fps=2)
-
-    """Creates decay perturbation"""
+    
     def decay_perturbation(t, viscosity):
+        """Creates decay perturbation"""
         size = Ny if exp_type == CV.velocity else Nx
         return eps * np.exp(-viscosity * (2*np.pi/size)**2 * t)
 
@@ -75,8 +76,9 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
     v_not = velocity
 
 
-    """Loop starts"""
+    
     for step in range(steps):
+        """Loop starts"""
         print(f'{step+1}//{steps}', end="\r")
         f = lbm.streaming(f)
         f, density, velocity = lbm.collision(f, omega)
