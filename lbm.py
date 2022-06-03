@@ -15,11 +15,29 @@ def calculate_velocity(f):
     velocity = (np.dot(f, CV.c).T / density.T).T
     return velocity
 
-def streaming(f):
+
+def streaming(f,Ny= None, Nx = None, lid_velocity=None):
     """Streaming takes place here"""
+    # f_copy = np.copy(f)
     for i in range(9):
-        f[:, :, i] = np.roll(np.roll(f[:, :, i], CV.c[i, 0], axis=0), CV.c[i, 1], axis=1)    
+        f[:, :, i] = np.roll(np.roll(f[:, :, i], CV.c[i, 0], axis=0), CV.c[i, 1], axis=1)   
+
+    # return bounce_back(f,lid_velocity)
+    # bounce_back at existing not moving walls
+    if lid_velocity:
+        rho_wall = 2 * (f[-1, :, 6] + f[-1, :, 2] + f[-1, :, 5]) + f[-1, :, 3] + f[-1, :, 0] + f[-1, :, 1]
+        # bounce back at bottom wall
+        f[1,:,2] = f[0,:,4]
+        f[1,:,6] = f[0,:,8] 
+        f[1,:,5] = f[0,:,7]
+
+        # Top moving wall with X velocity
+        f[Ny-2,:,4] = f[Ny-1,:,2] - 1 / 6 * CV.W[2] * rho_wall * np.dot(CV.c[4], [lid_velocity, 0])
+        f[Ny-2,:,7] = f[Ny-1,:,5] - 1 / 6 * CV.W[6] * rho_wall * np.dot(CV.c[7], [lid_velocity, 0])
+        f[Ny-2,:,8] = f[Ny-1,:,6] - 1 / 6 * CV.W[5] * rho_wall * np.dot(CV.c[8], [lid_velocity, 0])
+
     return f
+
 
 # Calculate Feq
 def calculate_equilibrium(density, velocity):
