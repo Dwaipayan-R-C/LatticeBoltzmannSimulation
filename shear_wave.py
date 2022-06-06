@@ -35,11 +35,11 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
     
     def visualize_density(i):
         """Visual function for animate [Refer to animate]"""
-        axes[0].scatter(x,y,c=density_animation[i], vmin=density_animation[i].min(), vmax=density_animation[i].max())
+        axes[3].scatter(x,y,c=density_animation[i], vmin=density_animation[i].min(), vmax=density_animation[i].max())
     
     def animate(density_animation):
         """Creates density animation"""
-        anim = animation.FuncAnimation(figs[0],visualize_density,repeat=False,frames=len(density_animation))
+        anim = animation.FuncAnimation(figs[3],visualize_density,repeat=False,frames=len(density_animation))
         anim.save('density_animation.gif',writer='imagemagic', fps=2)
     
     def decay_perturbation(t, viscosity):
@@ -81,7 +81,7 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
         """Loop starts"""
         print(f'{step+1}//{steps}', end="\r")
         f = lbm.streaming(f)
-        f, density, velocity = lbm.collision(f, omega)
+        f, density, velocity = lbm.calculate_collision(f, omega)
 
         if save_every is not None and (not (step % save_every) or step == steps - 1):
             density_animation.append(density) #if density flow is to be observed
@@ -90,11 +90,11 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
             
             """Density / Velocity continuous flow"""
             # 1. Check the continuous velocity flow
-            # axes[1].cla()
-            # lbm.plot(velocity,ax=axes[1])
-            # figs[1].canvas.draw()
-            # figs[1].canvas.flush_events()
-            # figs[1].show()
+            axes[1].cla()
+            lbm.plot(velocity,ax=axes[1])
+            figs[1].canvas.draw()
+            figs[1].canvas.flush_events()
+            figs[1].show()
 
 
             """Density / Velocity Decay plot and save"""
@@ -150,8 +150,8 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
             den_or_vel_list.append(np.max(density - 1))
             
     """View animation of density flow"""
-    # if(CV.exp_type == CV.density):
-        # animate(density_animation)
+    if(exp_type == CV.density):
+        animate(density_animation)
 
     """View Sinusoidal Decay over total time"""
     if exp_type == CV.velocity:
