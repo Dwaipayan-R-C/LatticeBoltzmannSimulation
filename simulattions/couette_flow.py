@@ -2,23 +2,18 @@
 from turtle import color
 import matplotlib.pyplot as plt
 import numpy as np
-import lbm 
-import constant as CV
+from lbm_common import lbm 
+from lbm_common import constant as CV
 import os
-from typing import Optional
-import sys
 import numpy as np
 from mpi4py import MPI
 import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
-from scipy.signal import argrelextrema
-from scipy.ndimage import gaussian_filter1d
-from scipy.interpolate import make_interp_spline
-from matplotlib import animation, legend
-from scipy.ndimage.filters import gaussian_filter1d
+from matplotlib import animation
+from lbm_common import boundary as boundary
 
 def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, save_every, steps, lid_vel):
-    
+    """ Calculates the couette flow for Nx by Ny D2Q9 lattice"""
+
     def visualize_couette(i):
         j= 0
         """Visual function for animate [Refer to animate]"""
@@ -31,7 +26,7 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
             axes[1].set_ylabel("Width Ny")
             axes[1].set_xlabel("Velocity in X direction")
             axes[1].set_title('Couette Flow with lid velocity {}'.format(lid_vel))
-              # setup for gif      
+            # setup for gif      
             axes[1].plot(x, y_min, color='k', linewidth=6.0)
             axes[1].plot(x, y_max, color='r', linewidth=6.0)
             axes[1].legend(['Analytical Flow','Simulated Flow','Rigid wall','Moving wall'])
@@ -48,12 +43,11 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
     def animate(velocity):
         """Creates density animation"""
         anim = animation.FuncAnimation(figs[1],visualize_couette,repeat=True,frames=len(couette_velocity_list))     
-        
-        anim.save('couette_animation.gif',writer='imagemagic', fps=2)
+        anim.save('{}/Couette_animation.gif'.format(output_dir),writer='imagemagic', fps=2)
 
-    """ Calculates the shear wave for Nx by Ny D2Q9 lattice"""
-    plt.rcParams.update({'font.size': 16})
-    plt.rcParams["font.family"] = "Times New Roman"
+    """ Calculates the couette flow for Nx by Ny D2Q9 lattice"""
+    plt.rcParams.update({'font.size': CV.fontsize})
+    plt.rcParams["font.family"] = CV.fontfamily
 
     fig1, ax1 = plt.subplots() # Used to save every frame  
     fig2, ax2 = plt.subplots() # Used to create a gif
@@ -78,8 +72,10 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
 
         # Streaming, Bounceback and Collision
         f = lbm.streaming(f)
-        f = lbm.bounce_back(f,lid_vel, velocity)        
+        f = boundary.couette_bounce_back(f,lid_vel,velocity)        
+               
         f, density, velocity = lbm.calculate_collision(f, omega)        
+        # f, density, velocity = lbm.calculate_collision(f, omega)        
 
         # Saving steps 
         if save_every is not None and (not (step % save_every) and step!=0):
