@@ -65,10 +65,9 @@ def periodic_boundary_with_pressure_variations(f,rho_in,rho_out):
 def sliding_bounce_back(f,lid_vel,velocity):    
 
     """Bounce back and lid velocity exerted here"""
-    rho_wall = (2 * (f[-1, :, 6] + f[-1, :, 2] + f[-1, :, 5]) + f[-1, :, 3] + f[-1, :, 0] + f[-1, :, 1])/(1+velocity[-1,:,1])
-    max_size_x = f.shape[1]-1  # x
-    max_size_y = f.shape[0]-1  # y
-    velocity = np.zeros((f.shape[0],f.shape[1],2))
+    rho_wall = (2 * (f[-1, 1:-1, 6] + f[-1, 1:-1, 2] + f[-1, 1:-1, 5]) + f[-1, 1:-1, 3] + f[-1, 1:-1, 0] + f[-1, 1:-1, 1])/(1+velocity[-1,1:-1,1])
+   
+    velocity[-1,:,1] = lid_vel
     
     # Test top + bottom
     # Bottom
@@ -77,8 +76,8 @@ def sliding_bounce_back(f,lid_vel,velocity):
     f[1,1:-1,6] = f[0,1:-1,8]
     # Top
     f[-2,1:-1,4] = f[-1,1:-1,2]
-    f[-2,1:-1,7] = f[-1,1:-1,5] - 1/6 * lid_vel
-    f[-2,1:-1,8] = f[-1,1:-1,6] + 1/6 * lid_vel
+    f[-2,1:-1,7] = f[-1,1:-1,5] - 1/2 *  rho_wall *  lid_vel
+    f[-2,1:-1,8] = f[-1,1:-1,6] + 1/2 *  rho_wall *  lid_vel
     # Test Right
     f[1:-1,1,1] = f[1:-1,0,3]
     f[1:-1,1,5] = f[1:-1,0,7]
@@ -87,23 +86,6 @@ def sliding_bounce_back(f,lid_vel,velocity):
     f[1:-1,-2,3] = f[1:-1,-1,1]
     f[1:-1,-2,6] = f[1:-1,-1,8]
     f[1:-1,-2,7] = f[1:-1,-1,5]
-
-    # # for right wall
-    # f[:,-2,6] = f[:,-1,5]
-    # f[:,-2,3] = f[:,-1,1]
-    # f[:,-2,7] = f[:,-1,8]
-    # f[:,-1,5] = 0
-    # f[:,-1,1] = 0
-    # f[:,-1,8] = 0
-
-    # # for left wall
-    # f[:,1,5] = f[:,0,6]
-    # f[:,1,1] = f[:,0,3]
-    # f[:,1,8] = f[:,0,7]
-    # f[:,0,6] = 0
-    # f[:,0,3] = 0
-    # f[:,0,7] = 0
-
 
 
     return f
