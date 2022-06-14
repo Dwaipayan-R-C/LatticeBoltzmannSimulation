@@ -12,10 +12,10 @@ This project is developed for a course named - "High Performance Computing: Flui
 
 
 # Setup:
-<--Required libraries-->
+## Required libraries
     1. Numpy
     2. Matplotlib
     3. Scipy
 
-<--Running file-->
+## Entry point
     init.py
