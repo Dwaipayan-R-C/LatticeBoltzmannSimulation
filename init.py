@@ -1,9 +1,9 @@
-
 """Imports"""
 from lbm_common import constant as CV
 from simulattions import shear_wave as shear_wave
 from simulattions import couette_flow as couette
 from simulattions import poiseuilleFlow as poiseuille
+from simulattions import sliding_lid as sliding_lid
 
 
 def experiment_type(type):
@@ -42,7 +42,20 @@ def experiment_type(type):
         save_every = 200        
         poiseuille.poiseuille_simulation(rho_null,p_diff, output_dir, Nx,Ny,omega,steps, save_every)
 
+    elif (type == CV.sliding_lid):
+        Nx = 150
+        Ny = 150
+        steps = 10000
+        rho_null = 1
+        omega = 0.5
+        output_dir = 'results'
+        save_every = 500    
+        lid_velocity = 0.01    
+        sliding_lid.sliding_lid_simulation(Nx, Ny, omega, output_dir, save_every, steps, lid_velocity)
+
 """Define the experiemnt  category"""
 if __name__ == "__main__":
-    # 'shear_wave', 'couette_flow', 'poiseuille_flow'
-    experiment_type("poiseuille_flow")
+    # 'shear_wave', 'couette_flow', 'poiseuille_flow', 'sliding_lid'
+    experiment_type("sliding_lid")
+# if(__name__ == "__main__"):
+#     sliding_lid.sliding_lid_simulation(150, 150, 1, 'results', 500, 10000, 0.01)

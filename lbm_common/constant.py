@@ -16,6 +16,7 @@ density = 'density'
 couette_flow = 'couette_flow'
 poiseuille_flow = 'poiseuille_flow'
 shear_wave = 'shear_wave'
+sliding_lid = 'sliding_lid'
 
 
 """Plot Global settings"""
