@@ -43,19 +43,17 @@ def experiment_type(type):
         poiseuille.poiseuille_simulation(rho_null,p_diff, output_dir, Nx,Ny,omega,steps, save_every)
 
     elif (type == CV.sliding_lid):
-        Nx = 150
-        Ny = 150
-        steps = 10000
+        Nx = 200
+        Ny = 200
+        steps = 100002
         rho_null = 1
-        omega = 0.5
+        re = 1000
         output_dir = 'results'
-        save_every = 500    
+        save_every = 5000    
         lid_velocity = 0.01    
-        sliding_lid.sliding_lid_simulation(Nx, Ny, omega, output_dir, save_every, steps, lid_velocity)
+        sliding_lid.sliding_lid_simulation(Nx, Ny, re, output_dir, save_every, steps, lid_velocity)
 
 """Define the experiemnt  category"""
 if __name__ == "__main__":
     # 'shear_wave', 'couette_flow', 'poiseuille_flow', 'sliding_lid'
-    experiment_type("couette_flow")
-# if(__name__ == "__main__"):
-#     sliding_lid.sliding_lid_simulation(150, 150, 1, 'results', 500, 10000, 0.01)
+    experiment_type("sliding_lid")

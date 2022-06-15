@@ -49,11 +49,8 @@ def poiseuille_bounce_back(f,lid_vel):
     return f
 
 def periodic_boundary_with_pressure_variations(f,rho_in,rho_out):
-    # get all the values
-    # p_diff = 0.5*(rho_in - rho_out)
     density = lbm.density_calculation(f)
     velocity = lbm.calculate_velocity(f, density)
-    # velocity[:,:,1] = velocity[:,:,1] + p_diff/
     equilibrium = lbm.calculate_equilibrium(density, velocity)    
     equilibrium_in = lbm.calculate_equilibrium_point(rho_in, velocity[:,-2,:])    
     f[:, 0, :] = equilibrium_in + (f[:, -2,:] - equilibrium[:, -2,:])
@@ -61,31 +58,28 @@ def periodic_boundary_with_pressure_variations(f,rho_in,rho_out):
     f[:, -1, :] = equilibrium_out + (f[:, 1, :] - equilibrium[:, 1, :])
     return f, density, velocity
 
-
 def sliding_bounce_back(f,lid_vel,velocity):    
 
     """Bounce back and lid velocity exerted here"""
     rho_wall = (2 * (f[-1, 1:-1, 6] + f[-1, 1:-1, 2] + f[-1, 1:-1, 5]) + f[-1, 1:-1, 3] + f[-1, 1:-1, 0] + f[-1, 1:-1, 1])/(1+velocity[-1,1:-1,1])
    
-    velocity[-1,:,1] = lid_vel
-    
-    # Test top + bottom
-    # Bottom
+    # Bottom wall
     f[1,1:-1,2] = f[0,1:-1,4]
     f[1,1:-1,5] = f[0,1:-1,7]
     f[1,1:-1,6] = f[0,1:-1,8]
-    # Top
+
+    # Top wall
     f[-2,1:-1,4] = f[-1,1:-1,2]
     f[-2,1:-1,7] = f[-1,1:-1,5] - 1/2 *  rho_wall *  lid_vel
     f[-2,1:-1,8] = f[-1,1:-1,6] + 1/2 *  rho_wall *  lid_vel
-    # Test Right
+
+    # Right wall
     f[1:-1,1,1] = f[1:-1,0,3]
     f[1:-1,1,5] = f[1:-1,0,7]
     f[1:-1,1,8] = f[1:-1,0,6]
-    # test legft
+
+    # left wall
     f[1:-1,-2,3] = f[1:-1,-1,1]
     f[1:-1,-2,6] = f[1:-1,-1,8]
     f[1:-1,-2,7] = f[1:-1,-1,5]
-
-
     return f

@@ -11,23 +11,24 @@ import matplotlib.pyplot as plt
 from matplotlib import animation
 from lbm_common import boundary as boundary
 
-def sliding_lid_simulation(Nx: int, Ny: int, omega: float, output_dir: str, save_every, steps, lid_vel):
+def sliding_lid_simulation(Nx: int, Ny: int, re: float, output_dir: str, save_every, steps, lid_vel):
     """ Calculates the sliding_lid flow for Nx by Ny D2Q9 lattice"""
 
+    omega = (2*re)/(6*Nx*lid_vel+re)
     def visualize_sliding_lid(i):
         
         """Visual function for animate [Refer to animate]"""
         x, y = np.meshgrid(np.arange(Nx+2), np.arange(Ny+2))
         axes[1].cla()
-        axes[1].set_ylabel("Width")
-        axes[1].set_xlabel("velocity in X direction")
-        axes[1].set_title('Sliding lid plot for lid velocity {} '.format(lid_vel))
+        axes[1].set_ylabel("Width Y")
+        axes[1].set_xlabel("Length X")
+        axes[1].set_title('Sliding lid plot for lid velocity {} and reynold number {}'.format(lid_vel, re))
         axes[1].streamplot(x, y, sliding_lid_velocity_list[i][:, :, 1], sliding_lid_velocity_list[i][:, :, 0], color = 'r')         
   
 
     def animate(velocity):
         """Creates density animation"""
-        anim = animation.FuncAnimation(figs[1],visualize_sliding_lid,repeat=False,frames=len(sliding_lid_velocity_list), cache_frame_data = False)     
+        anim = animation.FuncAnimation(figs[1],visualize_sliding_lid,repeat=True,frames=len(sliding_lid_velocity_list), cache_frame_data = False)     
         anim.save('{}/Karman_vortex_animation.gif'.format(output_dir),writer='imagemagic', fps=2)
 
     """ Calculates the sliding_lid flow for Nx by Ny D2Q9 lattice"""
@@ -60,14 +61,14 @@ def sliding_lid_simulation(Nx: int, Ny: int, omega: float, output_dir: str, save
         f, density, velocity = lbm.calculate_collision(f, omega)        
         
         # Saving steps 
-        if save_every is not None and (not (step % save_every) and step!=0):
+        if save_every is not None and (not (step % save_every)):
             axes[0].cla()
-            axes[0].set_ylabel("Width grid")
-            axes[0].set_xlabel("Length grid")
+            axes[0].set_ylabel("Width of grid (Y)")
+            axes[0].set_xlabel("Length of grid (X)")
             x, y = np.meshgrid(np.arange(Nx+2), np.arange(Ny+2))
             axes[0].streamplot(x, y, velocity[:, :, 1], velocity[:, :, 0])
-            save_path = os.path.join(common_path, f'velocity_at{step}.png')
-            axes[0].set_title('Velocity in x direction for lid velocity {} after {} iteration'.format(lid_vel, step))
+            save_path = os.path.join(common_path, f'sliding_{step}.png')
+            axes[0].set_title('Sliding lid flow with lid velocity {} and reynolds number {} after {} iteration'.format(lid_vel,re, step))
             figs[0].savefig(save_path, bbox_inches='tight', pad_inches=0)            
             sliding_lid_velocity_list.append(velocity)        
 
