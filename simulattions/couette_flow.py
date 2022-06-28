@@ -17,18 +17,18 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
     def visualize_couette(i):
         j= 0
         """Visual function for animate [Refer to animate]"""
-        axes[1].plot(couette_velocity_list[i], np.arange(Ny), color = 'darkgreen')
+        axes[1].plot(couette_velocity_list[i], np.arange(Ny))
         if(j == i):
             xmin, xmax, ymin, ymax = axes[1].axis()
             x = np.linspace(xmin, xmax)
-            y_max = np.full(len(x),ymax-2.5)
-            y_min = np.full(len(x),ymin+2.5)
+            y_max = np.full(len(x),ymax-2)
+            y_min = np.full(len(x),ymin+2)
             axes[1].set_ylabel("Width Ny")
             axes[1].set_xlabel("Velocity in X direction")
             axes[1].set_title('Couette Flow with lid velocity {}'.format(lid_vel))
             # setup for gif      
-            axes[1].plot(x, y_min, color='k', linewidth=6.0)
-            axes[1].plot(x, y_max, color='r', linewidth=6.0)
+            axes[1].plot(x, y_min, color='k')
+            axes[1].plot(x, y_max, color='r')
             axes[1].legend(['Analytical Flow','Simulated Flow','Rigid wall','Moving wall'])
         else:
             j = j+1
@@ -71,10 +71,11 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
         print(f'{step+1}//{steps}', end="\r")  
 
         # Streaming, Bounceback and Collision
+        f, density, velocity = lbm.calculate_collision(f, omega) 
         f = lbm.streaming(f)
         f = boundary.couette_bounce_back(f,lid_vel,velocity)        
                
-        f, density, velocity = lbm.calculate_collision(f, omega)        
+               
         # f, density, velocity = lbm.calculate_collision(f, omega)        
 
         # Saving steps 

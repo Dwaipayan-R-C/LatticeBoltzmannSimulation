@@ -58,7 +58,7 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
     if exp_type == CV.velocity:
         density = np.ones((Ny, Nx), dtype=np.float32)
         velocity = np.zeros((Ny, Nx, 2), dtype=np.float32)
-        velocity[:, :, 1] = eps * np.sin(2*np.pi/Ny*y)
+        velocity[:, :, 1] =  eps * np.sin(2*np.pi/Ny*y)
     else:
         density = 1 + eps * np.sin(2*np.pi/Nx*x)
         velocity = np.zeros((Ny, Nx, 2), dtype=np.float32)
@@ -130,7 +130,7 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
         y_val = instant_theoretical_velocity(kinematic_viscosity)
         y_val = y_val*(v_not[:, Nx//2, 1])
         v_not[:, Nx//2, 1] = y_val
-        theoretical_velocity.append(y_val.max())
+        theoretical_velocity.append(y_val.max())        
 
 
         """To get the maximum minimum decay plot"""
@@ -163,15 +163,16 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
         axes[2].cla()
         axes[2].set_xlim([0,len(x)])
         with plt.style.context('dark_background'):
-            axes[2].plot(x, theoretical_velocity, color = 'r',linestyle='dashed')
-            X_Y_Spline = make_interp_spline(x_value, max_min_list)
+            
+            X_Y_Spline = make_interp_spline(np.arange(steps), den_or_vel_list)
             X_ = np.linspace(0,x_value[-1], 500)
             Y_ = X_Y_Spline(X_)
-        axes[2].plot(X_, Y_, color='g')        
-        axes[2].set_xlabel('Time evolution of velocity at y = argmax(y)')
-        axes[2].set_ylabel('Velocity u(y = 05)')
+        axes[2].plot(X_, Y_, color='g') 
+        axes[2].plot(x, theoretical_velocity, color = 'r',linestyle='dotted')              
+        axes[2].set_xlabel('Time evolution')
+        axes[2].set_ylabel('Velocity u(y = 25)')
         axes[2].legend(
-            ['Analytical ux(y=25)', 'Simulated'])        
+            ['Simulated', 'Analytical ux(y=25)'])        
         save_path = os.path.join(path, f'omega_{omega}.png')
         figs[2].savefig(save_path, bbox_inches='tight', pad_inches=0)
         
