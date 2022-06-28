@@ -13,7 +13,7 @@ def poiseuille_simulation(rho_null, p_diff, output_dir, Nx, Ny, relaxation,steps
     def visualize_poiseuille(i):
         j= len(poiseuille_list)
         """Visual function for animate [Refer to animate]"""
-        axes[1].plot(poiseuille_list[i], np.arange(Ny), color = 'darkgreen')
+        axes[1].plot(poiseuille_list[i], np.arange(Ny))
         
     def analytical_poiseuille():
         x = np.arange(0, Nx+2)
