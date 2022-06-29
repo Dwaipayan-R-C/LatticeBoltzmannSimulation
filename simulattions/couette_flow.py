@@ -27,9 +27,9 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
             axes[1].set_xlabel("Velocity in X direction")
             axes[1].set_title('Couette Flow with lid velocity {}'.format(lid_vel))
             # setup for gif      
-            axes[1].plot(x, y_min, color='k')
-            axes[1].plot(x, y_max, color='r')
-            axes[1].legend(['Analytical Flow','Simulated Flow','Rigid wall','Moving wall'])
+            # axes[1].plot(x, y_min, color='k')
+            # axes[1].plot(x, y_max, color='r')
+            # axes[1].legend(['Analytical Flow','Simulated Flow','Rigid wall','Moving wall'])
         else:
             j = j+1
     
