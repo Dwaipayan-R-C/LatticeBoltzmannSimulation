@@ -45,7 +45,7 @@ def experiment_type(type):
     elif (type == CV.sliding_lid):
         Nx = 200
         Ny = 200
-        steps = 100002
+        steps = 150002
         rho_null = 1
         re = 1000
         output_dir = 'results'
