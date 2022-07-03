@@ -1,5 +1,4 @@
 """Library Imports"""
-from turtle import color
 import matplotlib.pyplot as plt
 import numpy as np
 from lbm_common import lbm 
@@ -59,12 +58,12 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
     os.makedirs(common_path, exist_ok=True)
     couette_velocity_list, couette_velocity_list_y = [], []
 
+
     """Starts from here"""
     # initilization of the grids used    
     f = np.ones((Ny,Nx,9))
     velocity = np.zeros((Ny,Nx,2))
-    analytical_vel = analytical_couette(np.arange(1,Ny-1))
-    
+    analytical_vel = analytical_couette(np.arange(1,Ny-1))    
     axes[1].plot(analytical_vel,np.arange(1,Ny-1), color = 'purple', linestyle='dashed')
         
     # Iteration starts from here
@@ -99,10 +98,10 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
             axes[0].set_ylabel("Width")
             axes[0].set_xlabel("velocity in X direction")
             
+            # x_val = plt_velocity[1:-1,Nx//2,1]
             x_val = plt_velocity[1:-1,Nx//2,1]
-            # x_val = np.concatenate((np.array([0]),np.array([low_x]), plt_velocity[2:-1,Nx//2,1],np.array([x_ex])))
+            # y_val = np.arange(1,Ny-1)
             y_val = np.arange(1,Ny-1)
-            # y_val = np.concatenate((np.array([0]),np.array([low_y]), np.arange(2,Ny-1),np.array([y_ex])))
             axes[0].plot(analytical_vel,np.arange(1,Ny-1), color = 'purple', linestyle='dashed')
             axes[0].plot(x_val, y_val)            
             # axes[0].plot(velocity[1:-1,Nx//2,1], np.arange(1,Ny-1), color = 'r')
