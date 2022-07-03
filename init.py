@@ -24,7 +24,7 @@ def experiment_type(type):
     elif (type==CV.couette_flow):        
         Nx = 50
         Ny = 50
-        steps = 4000
+        steps = 2000
         omega = 1
         output_dir = 'results'
         save_every = 200
@@ -55,5 +55,6 @@ def experiment_type(type):
 
 """Define the experiemnt  category"""
 if __name__ == "__main__":
+    
     # 'shear_wave', 'couette_flow', 'poiseuille_flow', 'sliding_lid'
-    experiment_type("sliding_lid")
+    experiment_type("couette_flow")

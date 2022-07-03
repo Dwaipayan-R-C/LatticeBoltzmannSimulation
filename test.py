@@ -37,7 +37,7 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
     
     def analytical_couette(y):
         """Define Analytical function for couette flow"""
-        x_vel = lid_vel * (y-1)/(Ny-2)        
+        x_vel = lid_vel * y/(Ny-1)        
         return x_vel
 
 
@@ -63,9 +63,9 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
     # initilization of the grids used    
     f = np.ones((Ny,Nx,9))
     velocity = np.zeros((Ny,Nx,2))
-    analytical_vel = analytical_couette(np.arange(1,Ny-1))
+    analytical_vel = analytical_couette(np.arange(Ny))
     
-    axes[1].plot(analytical_vel,np.arange(1,Ny-1), color = 'purple', linestyle='dashed')
+    axes[1].plot(analytical_vel,np.arange(Ny), color = 'purple', linestyle='dashed')
         
     # Iteration starts from here
     for step in range(steps):
@@ -86,24 +86,19 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
             x_1 = velocity[-3,Nx//2,1]
             y_0 = Ny - 2
             y_1 = Ny - 3
-            y_ex = Ny - 1.5
+            y_ex = Ny -1.5
             x_ex = (y_ex - (y_0-((y_1-y_0)/(x_1-x_0))*x_0))/((y_1-y_0)/(x_1-x_0))
-            low_y = 0.5
-            low_x1 = velocity[2,Nx//2,1]
-            low_x = low_y * low_x1
             plt_velocity = velocity
             # plt_velocity[0,Nx//2,1] = plt_velocity[1,Nx//2,1]
-            # plt_velocity[-1,Nx//2,1] = x_ex        
+            plt_velocity[-1,Nx//2,1] = x_ex        
             
             axes[0].cla()
             axes[0].set_ylabel("Width")
             axes[0].set_xlabel("velocity in X direction")
             
-            x_val = plt_velocity[1:-1,Nx//2,1]
-            # x_val = np.concatenate((np.array([0]),np.array([low_x]), plt_velocity[2:-1,Nx//2,1],np.array([x_ex])))
-            y_val = np.arange(1,Ny-1)
-            # y_val = np.concatenate((np.array([0]),np.array([low_y]), np.arange(2,Ny-1),np.array([y_ex])))
-            axes[0].plot(analytical_vel,np.arange(1,Ny-1), color = 'purple', linestyle='dashed')
+            x_val = np.concatenate((np.array([0]), plt_velocity[1:-1,Nx//2,1],np.array([x_ex])))
+            y_val = np.concatenate((np.array([0]), np.arange(1,Ny-1),np.array([y_ex])))
+            axes[0].plot(analytical_vel,np.arange(Ny), color = 'purple', linestyle='dashed')
             axes[0].plot(x_val, y_val)            
             # axes[0].plot(velocity[1:-1,Nx//2,1], np.arange(1,Ny-1), color = 'r')
             save_path = os.path.join(common_path, f'velocity_at{step}.png')

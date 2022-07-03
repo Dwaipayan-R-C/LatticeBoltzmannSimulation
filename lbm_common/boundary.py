@@ -7,6 +7,7 @@ def couette_bounce_back(f,lid_vel,velocity):
     """Bounce back and lid velocity exerted here"""
     rho_wall = (2 * (f[-1, :, 6] + f[-1, :, 2] + f[-1, :, 5]) + f[-1, :, 3] + f[-1, :, 0] + f[-1, :, 1])/(1+velocity[-1,:,1])
     velocity[-1,:,1] = lid_vel
+    # velocity[0,:,1] = 0
     # for bottom y = 0
     f[1, :, 2] = f[0, :, 4]
     f[1, :, 5] = f[0, :, 7]
