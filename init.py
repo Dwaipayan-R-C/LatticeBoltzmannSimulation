@@ -56,4 +56,4 @@ def experiment_type(type):
 """Define the experiemnt  category"""
 if __name__ == "__main__":
     # 'shear_wave', 'couette_flow', 'poiseuille_flow', 'sliding_lid'
-    experiment_type("couette_flow")
+    experiment_type("poiseuille_flow")

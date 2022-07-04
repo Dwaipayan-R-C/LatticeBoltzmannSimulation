@@ -49,7 +49,8 @@ def poiseuille_simulation(rho_null, p_diff, output_dir, Nx, Ny, relaxation,steps
 
     fig1, ax1 = plt.subplots() # Used to save every frame  
     fig2, ax2 = plt.subplots() # Used to create a gif
-    figs, axes = [fig1, fig2], [ax1,ax2]
+    fig3, ax3 = plt.subplots() # Used to create a gif
+    figs, axes = [fig1, fig2,fig3], [ax1,ax2,ax3]
     shear_viscosity = (1/relaxation-0.5)/3
     
     poiseuille_list = []        
@@ -98,3 +99,7 @@ def poiseuille_simulation(rho_null, p_diff, output_dir, Nx, Ny, relaxation,steps
     # visualize
     analytical_poiseuille()
     animate(velocity,np.max(velocity[1:-1, Nx//2,1]))
+    x, y = np.meshgrid(np.arange(Nx+2), np.arange(Ny+2))
+    save_density_path = os.path.join(common_path, f'density.png')
+    ax3.scatter(x,y,c=density)
+    figs[2].savefig(save_density_path, bbox_inches='tight', pad_inches=0)
