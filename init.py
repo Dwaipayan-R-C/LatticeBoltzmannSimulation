@@ -25,7 +25,7 @@ def experiment_type(type):
         Nx = 50
         Ny = 50
         steps = 4000
-        omega = 1
+        omega = 0.5
         output_dir = 'results'
         save_every = 200
         lid_velocity = 2
@@ -56,4 +56,4 @@ def experiment_type(type):
 """Define the experiemnt  category"""
 if __name__ == "__main__":
     # 'shear_wave', 'couette_flow', 'poiseuille_flow', 'sliding_lid'
-    experiment_type("poiseuille_flow")
+    experiment_type("couette_flow")
