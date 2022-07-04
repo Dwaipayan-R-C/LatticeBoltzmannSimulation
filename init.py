@@ -24,8 +24,8 @@ def experiment_type(type):
     elif (type==CV.couette_flow):        
         Nx = 50
         Ny = 50
-        steps = 2000
-        omega = 1
+        steps = 4000
+        omega = 0.5
         output_dir = 'results'
         save_every = 200
         lid_velocity = 2

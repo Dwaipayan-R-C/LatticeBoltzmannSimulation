@@ -21,15 +21,15 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
         if(j == i):
             xmin, xmax, ymin, ymax = axes[1].axis()
             x = np.linspace(xmin, xmax)
-            y_max = np.full(len(x),ymax-2)
-            y_min = np.full(len(x),ymin+2)
+            y_max = np.full(len(x),Ny-2)
+            y_min = np.full(len(x),1)
             axes[1].set_ylabel("Width Ny")
             axes[1].set_xlabel("Velocity in X direction")
             axes[1].set_title('Couette Flow with lid velocity {}'.format(lid_vel))
             # setup for gif      
-            # axes[1].plot(x, y_min, color='k')
-            # axes[1].plot(x, y_max, color='r')
-            # axes[1].legend(['Analytical Flow','Simulated Flow','Rigid wall','Moving wall'])
+            axes[1].plot(x, y_min, color='k')
+            axes[1].plot(x, y_max, color='r')
+            axes[1].legend(['Analytical Flow','Simulated Flow','Rigid wall','Moving wall'])
         else:
             j = j+1
     
@@ -64,7 +64,7 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
     f = np.ones((Ny,Nx,9))
     velocity = np.zeros((Ny,Nx,2))
     analytical_vel = analytical_couette(np.arange(1,Ny-1))    
-    axes[1].plot(analytical_vel,np.arange(1,Ny-1), color = 'purple', linestyle='dashed')
+    axes[1].plot(analytical_vel,np.arange(1,Ny-1), color = 'black', linestyle='dashed')
         
     # Iteration starts from here
     for step in range(steps):
@@ -102,7 +102,7 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
             x_val = plt_velocity[1:-1,Nx//2,1]
             # y_val = np.arange(1,Ny-1)
             y_val = np.arange(1,Ny-1)
-            axes[0].plot(analytical_vel,np.arange(1,Ny-1), color = 'purple', linestyle='dashed')
+            axes[0].plot(analytical_vel,np.arange(1,Ny-1), color = 'black', linestyle='dashed')
             axes[0].plot(x_val, y_val)            
             # axes[0].plot(velocity[1:-1,Nx//2,1], np.arange(1,Ny-1), color = 'r')
             save_path = os.path.join(common_path, f'velocity_at{step}.png')
