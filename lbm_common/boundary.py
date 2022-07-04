@@ -45,15 +45,15 @@ def poiseuille_bounce_back(f,lid_vel):
 
     return f
 
-def periodic_boundary_with_pressure_variations(f,rho_in,rho_out):
-    density = lbm.density_calculation(f)
-    velocity = lbm.calculate_velocity(f, density)
-    equilibrium = lbm.calculate_equilibrium(density, velocity)    
-    equilibrium_in = lbm.calculate_equilibrium_point(rho_in, velocity[:,-2,:])    
-    f[:, 0, :] = equilibrium_in + (f[:, -2,:] - equilibrium[:, -2,:])
-    equilibrium_out = lbm.calculate_equilibrium_point(rho_out, velocity[:,1,:])
-    f[:, -1, :] = equilibrium_out + (f[:, 1, :] - equilibrium[:, 1, :])
-    return f, density, velocity
+# def periodic_boundary_with_pressure_variations(f,rho_in,rho_out):
+#     density = lbm.density_calculation(f)
+#     velocity = lbm.calculate_velocity(f, density)
+#     equilibrium = lbm.calculate_equilibrium(density, velocity)    
+#     equilibrium_in = lbm.calculate_equilibrium_point(rho_in, velocity[:,-2,:])    
+#     f[:, 0, :] = equilibrium_in + (f[:, -2,:] - equilibrium[:, -2,:])
+#     equilibrium_out = lbm.calculate_equilibrium_point(rho_out, velocity[:,1,:])
+#     f[:, -1, :] = equilibrium_out + (f[:, 1, :] - equilibrium[:, 1, :])
+#     return f, density, velocity
 
 def sliding_bounce_back(f,lid_vel,velocity):    
 
