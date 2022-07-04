@@ -1,4 +1,5 @@
 # imports
+from cProfile import label
 import numpy as np
 import matplotlib.pyplot as plt
 from lbm_common import lbm
@@ -13,7 +14,7 @@ def poiseuille_simulation(rho_null, p_diff, output_dir, Nx, Ny, relaxation,steps
     def visualize_poiseuille(i):
         j= len(poiseuille_list)
         """Visual function for animate [Refer to animate]"""
-        axes[1].plot(poiseuille_list[i], np.arange(Ny), color = 'darkgreen')
+        axes[1].plot(poiseuille_list[i], np.arange(Ny))
         
     def analytical_poiseuille():
         x = np.arange(0, Nx+2)
@@ -32,11 +33,11 @@ def poiseuille_simulation(rho_null, p_diff, output_dir, Nx, Ny, relaxation,steps
         analytical_value = analytical_poiseuille() 
         axes[1].legend(['Analytical Flow','Simulated Flow','Rigid wall','Rigid wall'])
         x = np.linspace(0, np.max(analytical_value), Ny)    
-        y_max = np.full(len(x),Ny)
+        y_max = np.full(len(x),Ny-1)
         y_min = np.full(len(x),0)   
-        axes[1].plot(x, y_max, color='r', linewidth=3.0)
-        axes[1].plot(x, y_min, color='r', linewidth=3.0)               
-        axes[1].plot(analytical_value, np.arange(len(analytical_value)),color='r', linestyle='dashed')
+        axes[1].plot(x, y_max, color='r', linewidth=1.5)
+        axes[1].plot(x, y_min, color='r', linewidth=1.5)               
+        axes[1].plot(analytical_value, np.arange(len(analytical_value)),color='black', linestyle='dashed')
         anim = animation.FuncAnimation(figs[1],visualize_poiseuille,repeat=True,frames=len(poiseuille_list))        
         anim.save('{}/Poiseuille_animation.gif'.format(output_dir),writer='imagemagic', fps=2)
 
@@ -48,7 +49,8 @@ def poiseuille_simulation(rho_null, p_diff, output_dir, Nx, Ny, relaxation,steps
 
     fig1, ax1 = plt.subplots() # Used to save every frame  
     fig2, ax2 = plt.subplots() # Used to create a gif
-    figs, axes = [fig1, fig2], [ax1,ax2]
+    fig3, ax3 = plt.subplots() # Used to create a gif
+    figs, axes = [fig1, fig2,fig3], [ax1,ax2,ax3]
     shear_viscosity = (1/relaxation-0.5)/3
     
     poiseuille_list = []        
@@ -66,17 +68,29 @@ def poiseuille_simulation(rho_null, p_diff, output_dir, Nx, Ny, relaxation,steps
         f = lbm.streaming(f)
         f = boundary.poiseuille_bounce_back(f,0)        
         velocity = lbm.calculate_velocity(f,rho)
-        # rho, velocity = lbm.caluculate_real_values(f)
-        f, density, velocity = lbm.calculate_collision(f, 0.5)
+        f, density, velocity = lbm.calculate_collision(f, relaxation)
         if save_every is not None and (not (step % save_every) and step!=0):
+             
+             
             axes[0].cla()
             axes[0].set_ylabel("Width of the channel")
             axes[0].set_xlabel("Velocity [m/s] in X direction")
-            axes[0].plot(velocity[:,Nx//2,1], np.arange(Ny+2), color = 'g')
+            x_val = velocity[1:-1, Nx//2,1]
+            # x_val = np.concatenate((np.array([0]),velocity[2:-2, Nx//2,1],np.array([0])))
+            y_val = np.arange(Ny)
+            # y_val = np.concatenate((np.array([0]),np.arange(1,Ny-1),np.array([50])))
+            axes[0].plot(x_val, y_val, color = 'g')            
+            # axes[0].plot(velocity[:,Nx//2,1], np.arange(Ny+2), color = 'g')
             save_path = os.path.join(common_path, f'velocity_at{step}.png')
             axes[0].set_title('Poiseuille Flow with pressure gradient {}'.format(p_diff))
-            analytical_value = analytical_poiseuille()        
-            axes[0].plot(analytical_value, np.arange(len(analytical_value)),color='r', linestyle='dashed', label='Analytical')
+            analytical_value = analytical_poiseuille()       
+        
+            x = np.linspace(0, np.max(analytical_value), Ny)    
+            y_max = np.full(len(x),Ny-1)
+            y_min = np.full(len(x),0)
+            axes[0].plot(x, y_max, color='r', label="Fixed wall")
+            axes[0].plot(x, y_min, color='r')
+            axes[0].plot(analytical_value, np.arange(len(analytical_value)),color='black', linestyle='dashed', label='Analytical')
             axes[0].legend(['Analytical','Simulated'])
             figs[0].savefig(save_path, bbox_inches='tight', pad_inches=0)            
             poiseuille_list.append(velocity[1:-1, Nx//2,1])
@@ -85,4 +99,7 @@ def poiseuille_simulation(rho_null, p_diff, output_dir, Nx, Ny, relaxation,steps
     # visualize
     analytical_poiseuille()
     animate(velocity,np.max(velocity[1:-1, Nx//2,1]))
-
+    x, y = np.meshgrid(np.arange(Nx+2), np.arange(Ny+2))
+    save_density_path = os.path.join(common_path, f'density.png')
+    ax3.scatter(x,y,c=density)
+    figs[2].savefig(save_density_path, bbox_inches='tight', pad_inches=0)
