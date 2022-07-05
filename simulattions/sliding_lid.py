@@ -24,7 +24,7 @@ def sliding_lid_simulation(Nx: int, Ny: int, re: float, output_dir: str, save_ev
         axes[1].set_ylabel("Width Y")
         axes[1].set_xlabel("Length X")
         axes[1].set_title('Sliding lid plot for lid velocity {} and reynold number {}'.format(lid_vel, re))
-        axes[1].streamplot(x, y, sliding_lid_velocity_list[i][:, :, 1], sliding_lid_velocity_list[i][:, :, 0])         
+        axes[1].streamplot(x, y, sliding_lid_velocity_list[i][:, :, 1], sliding_lid_velocity_list[i][:, :, 0],color=speed, cmap = plt.cm.jet)         
   
 
     def animate(velocity):
@@ -62,15 +62,13 @@ def sliding_lid_simulation(Nx: int, Ny: int, re: float, output_dir: str, save_ev
         f, density, velocity = lbm.calculate_collision(f, omega)        
         
         # Saving steps 
-        if save_every is not None and (not (step % save_every)):
+        if save_every is not None and (not (step % save_every)) and step !=0:
             axes[0].cla()
             axes[0].set_ylabel("Width of grid (Y)")
             axes[0].set_xlabel("Length of grid (X)")
-            x, y = np.meshgrid(np.arange(Nx+2), np.arange(Ny+2))
-            # vel_x = velocity[:, :, 0].T**2
-            # vel_y = velocity[:, :, 1].T**2
-            # speed = vel_x + vel_y
-            axes[0].streamplot(x, y, velocity[:, :, 1], velocity[:, :, 0])
+            x, y = np.meshgrid(np.arange(Nx+2), np.arange(Ny+2)) 
+            speed = np.sqrt(velocity[:, :, 0].T**2 + velocity[:, :, 1].T**2)           
+            axes[0].streamplot(x, y, velocity[:, :, 1], velocity[:, :, 0], color=speed, cmap = plt.cm.jet)
             save_path = os.path.join(common_path, f'sliding_{step}.png')
             axes[0].set_title('Sliding lid flow with lid velocity {} and reynolds number {} after {} iteration'.format(lid_vel,re, step))
             figs[0].savefig(save_path, bbox_inches='tight', pad_inches=0)            

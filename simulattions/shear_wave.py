@@ -1,4 +1,5 @@
 """Library Imports"""
+from turtle import color
 import matplotlib.pyplot as plt
 import sys
 # sys.path.append("..")
@@ -78,7 +79,7 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
     vel_evolution, x_value, max_min_list, den_or_vel_list, theoretical_velocity =[], [], [],[],[]
     common_path = os.path.join(output_dir, 'shear_decay')
     v_not = velocity
-
+    
 
     
     for step in range(steps):
@@ -86,7 +87,7 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
         print(f'{step+1}//{steps}', end="\r")
         f = lbm.streaming(f)
         f, density, velocity = lbm.calculate_collision(f, omega)
-
+        # max_min_list.append(np.max(velocity[:, Nx//2, 1]))
         if save_every is not None and (not (step % save_every) or step == steps - 1):
             density_animation.append(density) #if density flow is to be observed
             path = os.path.join(common_path, f'decay_{exp_type}')
@@ -95,7 +96,8 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
             """Density / Velocity continuous flow"""
             # 1. Check the continuous velocity flow
             axes[1].cla()
-            lbm.plot(velocity,ax=axes[1])
+            v = np.sqrt(velocity[:, :, 0]**2 + velocity[:, :, 1]**2)
+            axes[1].imshow(v, cmap='RdBu_r', vmin=0, interpolation='spline16')            
             figs[1].canvas.draw()
             figs[1].canvas.flush_events()
             figs[1].show()
@@ -133,25 +135,16 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
         theoretical_velocity.append(y_val.max())        
 
 
-        """To get the maximum minimum decay plot"""
-        if(step%(steps//20) == 0 and step%(steps//10)!=0 ):
-            if(exp_type==CV.density):
-                max_min_list.append(np.max(density - 1))
-            else:
-                max_min_list.append(np.max(velocity[:, :, 1]))
-            x_value.append(step)   
-        elif(step%(steps//20)==0 ):
-            if(exp_type==CV.density):
-                max_min_list.append(np.min(density - 1))
-            else:
-                max_min_list.append(np.min(velocity[:, :, 1])) 
-            x_value.append(step)   
         
         """To get only the simulated maximas"""
         if exp_type == CV.velocity:
             den_or_vel_list.append(np.max(velocity[:, :, 1]))
+            max_min_list.append(np.min(velocity[:, :, 1]))
+            x_value.append(step)
         else:            
             den_or_vel_list.append(np.max(density - 1))
+            max_min_list.append(np.min(density - 1))
+            x_value.append(step)
             
     """View animation of density flow"""
     if(exp_type == CV.density):
@@ -162,17 +155,20 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
         x = np.arange(steps)
         axes[2].cla()
         axes[2].set_xlim([0,len(x)])
-        with plt.style.context('dark_background'):
             
-            X_Y_Spline = make_interp_spline(np.arange(steps), den_or_vel_list)
-            X_ = np.linspace(0,x_value[-1], 500)
-            Y_ = X_Y_Spline(X_)
-        axes[2].plot(X_, Y_, color='g') 
-        axes[2].plot(x, theoretical_velocity, color = 'r',linestyle='dotted')              
+        X_Y_Spline = make_interp_spline(np.arange(steps), den_or_vel_list)
+        X_Y_Spline_1 = make_interp_spline(np.arange(steps), max_min_list)
+        X_ = np.linspace(0,x_value[-1], 500)
+        Y_ = X_Y_Spline(X_)
+        Y_1 = X_Y_Spline_1(X_)
+        axes[2].plot(X_, Y_, color='blue') 
+        axes[2].plot(X_, Y_1, color='blue') 
+        axes[2].plot(x, theoretical_velocity, color = 'black',linestyle='dotted')   
+        axes[2].fill_between(X_,Y_,Y_1, color = "blue", alpha=.2)           
         axes[2].set_xlabel('Time evolution')
         axes[2].set_ylabel('Velocity u(y = 25)')
         axes[2].legend(
-            ['Simulated', 'Analytical ux(y=25)'])        
+            ['Simulated Maxima','Simulated Minima', 'Analytical ux(y=25)'])        
         save_path = os.path.join(path, f'omega_{omega}.png')
         figs[2].savefig(save_path, bbox_inches='tight', pad_inches=0)
         

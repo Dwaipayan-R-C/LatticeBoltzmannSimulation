@@ -11,12 +11,12 @@ def experiment_type(type):
         """Global settings"""
         Nx = 50
         Ny = 50
-        omega = 1
-        eps = 0.01
+        omega = 1.5
+        eps = 0.1
         output_dir = 'results'
-        save_every = 100
+        save_every = 500
         simulation_type = 'velocity' # density/ velocity
-        steps = 4000        
+        steps = 7000        
         simulated, analytical = shear_wave.shear_wave_simulation(Nx,Ny,omega,eps,output_dir,save_every,steps,simulation_type)
         print('Analytical Viscosity : '+ str(analytical))
         print('Simulated Viscosity : '+ str(simulated))
@@ -45,7 +45,7 @@ def experiment_type(type):
     elif (type == CV.sliding_lid):
         Nx = 300
         Ny = 300
-        steps = 12002
+        steps = 20001
         rho_null = 1
         re = 1000
         output_dir = 'results'
@@ -56,6 +56,6 @@ def experiment_type(type):
 """Define the experiemnt  category"""
 if __name__ == "__main__":
     # 'shear_wave', 'couette_flow', 'poiseuille_flow', 'sliding_lid'
-    experiment_type("poiseuille_flow")
+    experiment_type("sliding_lid")
 
 # 
