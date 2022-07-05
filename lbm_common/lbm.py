@@ -11,7 +11,6 @@ def density_calculation(f):
 
 
 def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):
-
     rho = density_calculation(grid)
     velocity = calculate_velocity(grid,rho)
     equilibrium = calculate_equilibrium(rho,velocity)
@@ -27,8 +26,7 @@ def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):
 
 def calculate_velocity(f, density):
     """Calculates the velocity"""   
-    velocity = np.dot(f, CV.c) / (density[:, :, None])
-    
+    velocity = np.dot(f, CV.c) / (density[:, :, None])    
     return velocity
 
 def streaming(f):

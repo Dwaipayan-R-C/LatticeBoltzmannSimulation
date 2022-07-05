@@ -51,21 +51,26 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
 
     fig1, ax1 = plt.subplots() # Used to save every frame  
     fig2, ax2 = plt.subplots() # Used to create a gif
-    figs, axes = [fig1, fig2], [ax1,ax2]
+    fig3, ax3 = plt.subplots() # Used to create a gif
+    figs, axes = [fig1, fig2, fig3], [ax1,ax2, ax3]
     
     # Variable declaration
     common_path = os.path.join(output_dir, 'Couette_flow')    
     os.makedirs(common_path, exist_ok=True)
     couette_velocity_list, couette_velocity_list_y = [], []
 
+    den_check = []
 
     """Starts from here"""
     # initilization of the grids used    
     f = np.ones((Ny,Nx,9))
+    density = np.ones((Ny,Nx))
     velocity = np.zeros((Ny,Nx,2))
     analytical_vel = analytical_couette(np.arange(1,Ny-1))    
     axes[1].plot(analytical_vel,np.arange(1,Ny-1), color = 'black', linestyle='dashed')
-        
+
+    f = lbm.calculate_equilibrium(density,velocity) 
+    count_val = 0
     # Iteration starts from here
     for step in range(steps):
         print(f'{step+1}//{steps}', end="\r")  
@@ -74,13 +79,15 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
         f, density, velocity = lbm.calculate_collision(f, omega) 
         f = lbm.streaming(f)
         f = boundary.couette_bounce_back(f,lid_vel,velocity)        
-               
+        # print(step)
                
         # f, density, velocity = lbm.calculate_collision(f, omega)        
 
         # Saving steps 
         if save_every is not None and (not (step % save_every) and step!=0):
-
+            
+            den_check.append(np.average(density[-2,:]))
+            count_val = count_val +1
             x_0 = velocity[-2,Nx//2,1]
             x_1 = velocity[-3,Nx//2,1]
             y_0 = Ny - 2
@@ -111,7 +118,6 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
             axes[0].legend(['Analytical','Simulated'])
             couette_velocity_list.append(x_val)        
             couette_velocity_list_y.append(y_val)        
-            # couette_velocity_list.append(velocity[1:-1,Nx//2,1])        
-
+            
     # Animate the couette flow 
     animate(couette_velocity_list, couette_velocity_list_y)

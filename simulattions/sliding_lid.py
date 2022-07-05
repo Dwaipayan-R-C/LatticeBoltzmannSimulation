@@ -62,12 +62,12 @@ def sliding_lid_simulation(Nx: int, Ny: int, re: float, output_dir: str, save_ev
         f, density, velocity = lbm.calculate_collision(f, omega)        
         
         # Saving steps 
-        if save_every is not None and (not (step % save_every)):
+        if save_every is not None and (not (step % save_every)) and step !=0:
             axes[0].cla()
             axes[0].set_ylabel("Width of grid (Y)")
             axes[0].set_xlabel("Length of grid (X)")
-            x, y = np.meshgrid(np.arange(Nx+2), np.arange(Ny+2))
-            speed = np.sqrt(velocity[:, :, 0].T**2 + velocity[:, :, 1].T**2)
+            x, y = np.meshgrid(np.arange(Nx+2), np.arange(Ny+2)) 
+            speed = np.sqrt(velocity[:, :, 0].T**2 + velocity[:, :, 1].T**2)           
             axes[0].streamplot(x, y, velocity[:, :, 1], velocity[:, :, 0], color=speed, cmap = plt.cm.jet)
             save_path = os.path.join(common_path, f'sliding_{step}.png')
             axes[0].set_title('Sliding lid flow with lid velocity {} and reynolds number {} after {} iteration'.format(lid_vel,re, step))
