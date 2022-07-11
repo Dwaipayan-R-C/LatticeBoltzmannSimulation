@@ -26,7 +26,7 @@ def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):
 
 def calculate_velocity(f, density):
     """Calculates the velocity"""   
-    velocity = np.dot(f, CV.c) / (density[:, :, None])    
+    velocity = (np.dot(f, CV.c).T / density.T).T    
     return velocity
 
 def streaming(f):
