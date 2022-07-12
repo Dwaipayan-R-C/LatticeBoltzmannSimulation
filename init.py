@@ -9,13 +9,17 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-
-
+# Experimental setup
 def experiment_type(type):
     plt.rcParams.update({'font.size': CV.fontsize})
     plt.rcParams["font.family"] = CV.fontfamily
+
+    # Shear wave settings
     if(type == CV.shear_wave):
         """Global settings"""
+        # These are the omega values taken to measure for Analytical vs Simulated kinematic viscosity
+        # Turn on the kinematic_vs_analytical to True in order to get a result of the same. 
+        # In that case, please comment other plots in shear wave decay
         omega_list = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
         analytical_viscosity, simulated_viscosity = [],[]
         Nx = 50
@@ -51,7 +55,7 @@ def experiment_type(type):
             simulated, analytical = shear_wave.shear_wave_simulation(Nx,Ny,omega,eps,output_dir,save_every,steps,simulation_type)
             print('Analytical Viscosity : '+ str(analytical))
             print('Simulated Viscosity : '+ str(simulated))
-    
+    # Couette flow settings
     elif (type==CV.couette_flow):        
         Nx = 100
         Ny = 50
@@ -59,9 +63,10 @@ def experiment_type(type):
         omega = 1.5
         output_dir = 'results'
         save_every = 500
-        lid_velocity = 0.01
+        lid_velocity = 0.1
         couette.couette_flow_simulation(Nx,Ny,omega,output_dir,save_every,steps, lid_velocity)
 
+    # Poisuille flow settings
     elif (type == CV.poiseuille_flow):
         Nx = 50
         Ny = 50
@@ -73,6 +78,7 @@ def experiment_type(type):
         save_every = 200        
         poiseuille.poiseuille_simulation(rho_null,p_diff, output_dir, Nx,Ny,omega,steps, save_every)
 
+    # Sliding lid settings
     elif (type == CV.sliding_lid):
         Nx = 300
         Ny = 300

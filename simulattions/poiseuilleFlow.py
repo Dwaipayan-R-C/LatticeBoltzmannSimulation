@@ -92,7 +92,7 @@ def poiseuille_simulation(rho_null, p_diff, output_dir, Nx, Ny, relaxation,steps
             axes[0].plot(x, y_min, color='r')
             axes[0].plot(analytical_value, np.arange(len(analytical_value)),color='black', linestyle='dashed', label='Analytical')
             axes[0].legend(['Analytical','Simulated'])
-            figs[0].savefig(save_path, bbox_inches='tight', pad_inches=0)            
+            figs[0].savefig(save_path,  pad_inches=1)            
             poiseuille_list.append(velocity[1:-1, Nx//2,1])
         
 
@@ -102,4 +102,4 @@ def poiseuille_simulation(rho_null, p_diff, output_dir, Nx, Ny, relaxation,steps
     x, y = np.meshgrid(np.arange(Nx+2), np.arange(Ny+2))
     save_density_path = os.path.join(common_path, f'density.png')
     ax3.scatter(x,y,c=density)
-    figs[2].savefig(save_density_path, bbox_inches='tight', pad_inches=0)
+    figs[2].savefig(save_density_path,  pad_inches=1)
