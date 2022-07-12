@@ -1,3 +1,4 @@
+"""Imports"""
 import numpy as np
 from lbm_common import constant as CV
 import matplotlib.pyplot as plt
@@ -13,13 +14,13 @@ def density_calculation(f):
 def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):
     rho = density_calculation(grid)
     velocity = calculate_velocity(grid,rho)
+    # overall equilibrium
     equilibrium = calculate_equilibrium(rho,velocity)
     equilibrium_in = calculate_equilibrium(rho_in, velocity[:,-2,:], True)
-    # inlet 1,5,8
+    # equilibrium for inlet 1,5,8
     grid[:,0, :] = equilibrium_in + (grid[:,-2, :] - equilibrium[:,-2, :])
-    # outlet 3,6,7
-    equilibrium_out = calculate_equilibrium(rho_out, velocity[:, 1, :], True)
-    # check for correct sizes
+    # equilibrium for outlet 3,6,7
+    equilibrium_out = calculate_equilibrium(rho_out, velocity[:, 1, :], True)    
     grid[:,-1, :] = equilibrium_out + (grid[:,1, :] - equilibrium[:,1, :])
     return rho, velocity, grid
 
