@@ -36,8 +36,7 @@ def poiseuille_bounce_back(f,lid_vel):
 def sliding_bounce_back(f,lid_vel,velocity):    
 
     """Bounce back and lid velocity exerted here"""
-    rho_wall = (2 * (f[-1, 1:-1, 6] + f[-1, 1:-1, 2] + f[-1, 1:-1, 5]) + f[-1, 1:-1, 3] + f[-1, 1:-1, 0] + f[-1, 1:-1, 1])/(1+velocity[-1,1:-1,1])
-   
+  
     # Bottom wall
     f[1,1:-1,2] = f[0,1:-1,4]
     f[1,1:-1,5] = f[0,1:-1,7]
@@ -45,8 +44,8 @@ def sliding_bounce_back(f,lid_vel,velocity):
 
     # Top wall
     f[-2,1:-1,4] = f[-1,1:-1,2]
-    f[-2,1:-1,7] = f[-1,1:-1,5] - 1/2 *  rho_wall *  lid_vel
-    f[-2,1:-1,8] = f[-1,1:-1,6] + 1/2 *  rho_wall *  lid_vel
+    f[-2,1:-1,7] = f[-1,1:-1,5] - 1/6 *  lid_vel
+    f[-2,1:-1,8] = f[-1,1:-1,6] + 1/6 *  lid_vel
 
     # Right wall
     f[1:-1,1,1] = f[1:-1,0,3]

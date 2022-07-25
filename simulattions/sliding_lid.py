@@ -1,6 +1,7 @@
 """Library Imports"""
 
 import matplotlib.pyplot as plt
+# import ipyparallel as ipp
 import numpy as np
 from lbm_common import lbm 
 from lbm_common import constant as CV
@@ -10,6 +11,14 @@ from mpi4py import MPI
 import matplotlib.pyplot as plt
 from matplotlib import animation
 from lbm_common import boundary as boundary
+
+# def mpi_example():
+#     from mpi4py import MPI
+#     comm = MPI.COMM_WORLD
+#     return f"Hello World from rank {comm.Get_rank()}. total ranks={comm.Get_size()}"
+
+# request an MPI cluster with 4 engines
+
 
 def sliding_lid_simulation(Nx: int, Ny: int, re: float, output_dir: str, save_every, steps, lid_vel):
     """ Calculates the sliding_lid flow for Nx by Ny D2Q9 lattice"""
@@ -31,7 +40,15 @@ def sliding_lid_simulation(Nx: int, Ny: int, re: float, output_dir: str, save_ev
         """Creates density animation"""
         anim = animation.FuncAnimation(figs[1],visualize_sliding_lid,repeat=True,frames=len(sliding_lid_velocity_list), cache_frame_data = False)     
         anim.save('{}/Karman_vortex_animation.gif'.format(output_dir),writer='imagemagic', fps=2)
+        
+    # comm = MPI.COMM_WORLD
+    # size = comm.Get_size()
+    # rank = comm.Get_rank()
 
+    # CommCart = comm.Create_cart((1, 1), periods=(False, False))
+    
+    # print("The rank is: {} and the coordinate is: {} ".format(rank, CommCart.Get_coords(rank)))
+    
     """ Calculates the sliding_lid flow for Nx by Ny D2Q9 lattice"""
     plt.rcParams.update({'font.size': CV.fontsize})
     plt.rcParams["font.family"] = CV.fontfamily
@@ -74,6 +91,9 @@ def sliding_lid_simulation(Nx: int, Ny: int, re: float, output_dir: str, save_ev
             figs[0].savefig(save_path, bbox_inches='tight', pad_inches=0)            
             sliding_lid_velocity_list.append(velocity)        
 
-    # Animate the sliding_lid flow 
+    # # Animate the sliding_lid flow 
+    
     animate(sliding_lid_velocity_list)
 
+
+    

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=2
+#SBATCH --time=00:30:00
+#SBATCH --job-name=hpc
+#SBATCH --mem=6gb
+#SBATCH --export=all
+#SBATCH --partition=dev_multiple
+
+echo "hey there!"
+#module load compiler/gnu/10.3
+module load devel/python/3.8.6_gnu_10.2
+module load mpi/openmpi/4.1
+seconds=0
+echo "running on ${slurm_job_num_nodes} nodes with ${slurm_job_cpus_per_node} cores each."
+echo "each node has ${slurm_mem_per_node} of memory allocated to this job."
+mpirun python sliding_mpi.py 10000 1000 100 100 1000 0.1 2 2 
+echo $seconds
+
