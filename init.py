@@ -89,8 +89,8 @@ def experiment_type(type):
 
     # Sliding lid settings
     elif (type == CV.sliding_lid):
-        Nx = 300
-        Ny = 300
+        Nx = 100
+        Ny = 100
         steps = 20001
         rho_null = 1
         re = 1000

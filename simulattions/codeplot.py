@@ -3,9 +3,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-lid_vel = 0.1
+lid_vel = 0.2
 omega = 1.6
-length = 1000
+length = 100
 
 calc_neu = lambda omega: (1/3 * (1/omega - 1/2)) 
 calc_reynolds = lambda omega, length, vel: (vel * length) / calc_neu(omega)
@@ -14,7 +14,9 @@ ux = []
 uy = []
                  
 for i in range(0, 10000, 1000):
-    ux.append(np.load('sliding_lid_mpi/data/ux_{}.npy'.format(i)))
+    var = 'sliding_lid_mpi/data/ux_{}.npy'.format(i)
+    print(var)
+    ux.append(np.load(var))
     uy.append(np.load('sliding_lid_mpi/data/uy_{}.npy'.format(i)))
     
 ux = np.array(ux)

@@ -111,6 +111,27 @@ def save_mpiio(comm, fn, g_kl):
     filetype.Free()
     file.Close()
 
+
+def f_moving_wall(f, lid_vel):
+    rho_wall = (2 * (f[-1, 1:-1, 6] + f[-1, 1:-1, 2] + f[-1, 1:-1, 5]) + f[-1, 1:-1, 3] + f[-1, 1:-1, 0] + f[-1, 1:-1, 1])    
+    f[-2,1:-1,4] = f[-1,1:-1,2]
+    f[-2,1:-1,7] = f[-1,1:-1,5] - 1/6  * rho_wall * lid_vel
+    f[-2,1:-1,8] = f[-1,1:-1,6] + 1/6  * rho_wall*  lid_vel
+
+    return f
+    
+def f_rigid_wall(f, top, down, left, right):
+
+    if top:
+        f[-2,:, [7,4,8]] = f[-1,:, [5,2,6]]
+    if down:
+        f[1,:, [5,2,6]] = f[0,:, [7,4,8]]
+    if left:
+        f[:,1, [8,1,5]] = f[:,0, [6,3,7]]
+    if right:
+        f[:,-2, [7,3,6]] = f[:,-1, [5,1,8]]
+    return f
+
 def calculate_equilibrium(density, velocity, simulation = False):
     """Calculates the collision equlibrium function Feq"""
     if(simulation == True):
@@ -127,30 +148,64 @@ def calculate_equilibrium(density, velocity, simulation = False):
     return f_eq
 
 
-# def sliding_bounce_back(f,lid_vel,velocity):    
+def f_comm1(f, commCart):
+   
+    top_src, top_dst = commCart.Shift(0, -1)
+    bot_src, bot_dst = commCart.Shift(0, +1)
+    lef_src, lef_dst = commCart.Shift(1, -1)
+    rig_src, rig_dst = commCart.Shift(1, +1)
 
-#     """Bounce back and lid velocity exerted here"""
-  
-#     # Bottom wall
-#     f[1,1:-1,2] = f[0,1:-1,4]
-#     f[1,1:-1,5] = f[0,1:-1,7]
-#     f[1,1:-1,6] = f[0,1:-1,8]
+    # for 4 in
+    '''
+    6 7 8
+    3 4 5
+    0 1 2 <- moving lid here
+    '''
+    
+    p1 = f[  1,  :,:].copy()
+    p2 = f[ -1,  :,:].copy()
+    commCart.Sendrecv(p1, top_dst, recvbuf=p2, source=top_src) # dest 7  src 1
+    f[ -1,  :,:] = p2
+    
+    p1 = f[ -2,  :,:].copy()
+    p2 = f[  0,  :,:].copy()
+    commCart.Sendrecv(p1, bot_dst, recvbuf=p2, source=bot_src) # dest 1 src 7
+    f[  0,  :,:] = p2
+    
+    p1 = f[  :,  1,:].copy()
+    p2 = f[  :, -1,:].copy()
+    commCart.Sendrecv(p1, lef_dst, recvbuf=p2, source=lef_src) # dest 3 src 5
+    f[  :, -1,:] = p2
+    
+    p1 = f[  :, -2,:].copy()
+    p2 = f[ :,  0, :,].copy()
+    commCart.Sendrecv(p1, rig_dst, recvbuf=p2, source=rig_src) # dst 5 src 3
+    f[  :,  0, :] = p2
+    
+    return f
 
-#     # Top wall
-#     f[-2,1:-1,4] = f[-1,1:-1,2]
-#     f[-2,1:-1,7] = f[-1,1:-1,5] - 1/6 *  lid_vel
-#     f[-2,1:-1,8] = f[-1,1:-1,6] + 1/6 *  lid_vel
-
-#     # Right wall
-#     f[1:-1,1,1] = f[1:-1,0,3]
-#     f[1:-1,1,5] = f[1:-1,0,7]
-#     f[1:-1,1,8] = f[1:-1,0,6]
-
-#     # left wall
-#     f[1:-1,-2,3] = f[1:-1,-1,1]
-#     f[1:-1,-2,6] = f[1:-1,-1,8]
-#     f[1:-1,-2,7] = f[1:-1,-1,5]
-    # return f
+def f_wall_parallel(f, coords, i):
+   
+    if (coords[0] == 0):
+        f = f_rigid_wall(f, False, True, False, False)
+        # if(i == 10):
+        #     print(f"the rank for coord00 is {rank}")
+        
+    if (coords[0] == (y_decomp - 1)):
+        f = f_moving_wall(f, lid_vel)
+        # if(i == 10):
+        #     print(f"the rank for coord0y is {rank}")
+        
+    if (coords[1] == 0):
+        f = f_rigid_wall(f, False, False, True, False)
+        # if(i == 10):
+        #     print(f"the rank for coord11 is {rank}")
+        
+    if (coords[1] == (x_decomp - 1)):
+        f = f_rigid_wall(f, False, False, False, True)
+        # if(i == 10):
+        #     print(f"the rank for coord1x is {rank}")    
+    return f
 def sliding_bounce_back(f,lid_vel,velocity):    
 
     """Bounce back and lid velocity exerted here"""
@@ -163,8 +218,8 @@ def sliding_bounce_back(f,lid_vel,velocity):
 
     # Top wall
     f[-2,1:-1,4] = f[-1,1:-1,2]
-    f[-2,1:-1,7] = f[-1,1:-1,5] - 1/6  *  lid_vel
-    f[-2,1:-1,8] = f[-1,1:-1,6] + 1/6  *  lid_vel
+    f[-2,1:-1,7] = f[-1,1:-1,5] - 1/6  * rho_wall * lid_vel
+    f[-2,1:-1,8] = f[-1,1:-1,6] + 1/6  * rho_wall*  lid_vel
 
     # Right wall
     f[1:-1,1,1] = f[1:-1,0,3]
@@ -176,52 +231,24 @@ def sliding_bounce_back(f,lid_vel,velocity):
     f[1:-1,-2,6] = f[1:-1,-1,8]
     f[1:-1,-2,7] = f[1:-1,-1,5]
     return f
-def communicator(f, CommCart):
-   
-    top_src, top_dst = CommCart.Shift(1, -1)
-    bot_src, bot_dst = CommCart.Shift(1, +1)
-    lef_src, lef_dst = CommCart.Shift(0, -1)
-    rig_src, rig_dst = CommCart.Shift(0, +1)
-    
-    p1 = f[:,  1,  :].copy()
-    p2 = f[:, -1,  :].copy()
-    CommCart.Sendrecv(p1, top_dst, recvbuf=p2, source=top_src)
-    f[:, -1,  :] = p2
-    
-    p1 = f[:, -2,  :].copy()
-    p2 = f[:,  0,  :].copy()
-    CommCart.Sendrecv(p1, bot_dst, recvbuf=p2, source=bot_src)
-    f[:,  0,  :] = p2
-    
-    p1 = f[:,  :,  1].copy()
-    p2 = f[:,  :, -1].copy()
-    CommCart.Sendrecv(p1, lef_dst, recvbuf=p2, source=lef_src)
-    f[:,  :, -1] = p2
-    
-    p1 = f[:,  :, -2].copy()
-    p2 = f[:,  :,  0].copy()
-    CommCart.Sendrecv(p1, rig_dst, recvbuf=p2, source=rig_src)
-    f[:,  :,  0] = p2
-    
-    return f
 
-def sliding_lid_simulation(Nx: int, Ny: int, re: float, save_every, steps, lid_vel, y_decomp, x_decomp):
+
+def sliding_lid_simulation(Nx: int, Ny: int, omega: float, save_every, steps, lid_vel, y_decomp, x_decomp):
     """ Calculates the sliding_lid flow for Nx by Ny D2Q9 lattice"""
 
-    omega = (2*re)/(6*Nx*lid_vel+re)    
-        
+    # omega = (2*re)/(6*Nx*lid_vel+re)          
     comm = MPI.COMM_WORLD
     size = comm.Get_size()
     rank = comm.Get_rank()
 
-    CommCart = comm.Create_cart((y_decomp, x_decomp), periods=(False, False))
+    CommCart = comm.Create_cart((y_decomp, x_decomp), periods=(False, False), reorder=False)    
     
     print("The rank is: {} and the coordinate is: {} ".format(rank, CommCart.Get_coords(rank)))
-    
-    """ Calculates the sliding_lid flow for Nx by Ny D2Q9 lattice"""    
+    coords = CommCart.Get_coords(rank)
+    # """ Calculates the sliding_lid flow for Nx by Ny D2Q9 lattice"""    
 
-    # """Starts from here"""
-    # # initilization of the grids used    
+    # # """Starts from here"""
+    # # # initilization of the grids used    
     rows = Ny // y_decomp + 2
     columns = Nx // x_decomp + 2
     density = np.ones((rows,columns))
@@ -231,12 +258,13 @@ def sliding_lid_simulation(Nx: int, Ny: int, re: float, save_every, steps, lid_v
         
     # # Iteration starts from here
     for step in range(steps):
-        # print(f'{step+1}//{steps}', end="\r")  
+        print(f'{step+1}//{steps}', end="\r")  
 
         # Streaming, Bounceback and Collision
-        f = communicator(f, CommCart)
+        f = f_comm1(f, CommCart)
         f = streaming(f)
-        f = sliding_bounce_back(f,lid_vel,velocity)
+        f = f_wall_parallel(f, coords, step)
+        # f = sliding_bounce_back(f,lid_vel,velocity)
         f, density, velocity = calculate_collision(f, omega)    
         
         if (step%save_every == 0):
@@ -245,23 +273,23 @@ def sliding_lid_simulation(Nx: int, Ny: int, re: float, save_every, steps, lid_v
 
       
         
-# steps = int(sys.argv[1])#10000
-# save_every = int(sys.argv[2])#1000
-# length = int(sys.argv[3])#100
-# width = int(sys.argv[4])#100
-# re = float(sys.argv[5])#1000
-# lid_vel = float(sys.argv[6])#0.1
-# y_decomp = int(sys.argv[7])#1
-# x_decomp = int(sys.argv[8])#1
+steps = int(sys.argv[1])#10000
+save_every = int(sys.argv[2])#1000
+length = int(sys.argv[3])#100
+width = int(sys.argv[4])#100
+omega = float(sys.argv[5])#1000
+lid_vel = float(sys.argv[6])#0.1
+y_decomp = int(sys.argv[7])#1
+x_decomp = int(sys.argv[8])#1
 # print(sys.argv[1:]) 
-steps = 10000
-save_every = 1000
-length = int(100)
-width = int(100)
-re = 1000
-lid_vel = 0.1
-y_decomp = 1
-x_decomp = 1
+# steps = 50000
+# save_every = 1000
+# length = int(100)
+# width = int(100)
+# re = 1000
+# lid_vel = 0.1
+# y_decomp = 1
+# x_decomp = 1
 files = glob.glob('data/*')
 for j in files:
     try:
@@ -270,5 +298,5 @@ for j in files:
         pass
         
 
-sliding_lid_simulation(length, width, re, save_every, steps, lid_vel, y_decomp, x_decomp)
+sliding_lid_simulation(length, width, omega, save_every, steps, lid_vel, y_decomp, x_decomp)
     
