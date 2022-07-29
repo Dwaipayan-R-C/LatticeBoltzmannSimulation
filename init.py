@@ -69,7 +69,7 @@ def experiment_type(type):
         steps = 20000
         omega = 1.5
         output_dir = 'results'
-        save_every = 500
+        save_every = 1000
         lid_velocity = 0.1
         couette.couette_flow_simulation(
             Nx, Ny, omega, output_dir, save_every, steps, lid_velocity)
@@ -83,7 +83,7 @@ def experiment_type(type):
         p_diff = 0.001
         omega = 1
         output_dir = 'results'
-        save_every = 200
+        save_every = 500
         poiseuille.poiseuille_simulation(
             rho_null, p_diff, output_dir, Nx, Ny, omega, steps, save_every)
 
@@ -112,6 +112,6 @@ def experiment_type(type):
 """Define the experiemnt  category"""
 if __name__ == "__main__":
     # 'shear_wave', 'couette_flow', 'poiseuille_flow', 'sliding_lid'
-    experiment_type("sliding_lid")
+    experiment_type("poiseuille_flow")
 
 #

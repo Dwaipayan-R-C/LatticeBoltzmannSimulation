@@ -66,7 +66,9 @@ def poiseuille_simulation(rho_null, p_diff, output_dir, Nx, Ny, relaxation,steps
         print(f'{step+1}//{steps}', end="\r")
         rho, velocity, f =lbm.periodic_boundary_with_pressure_variations(f,rho_in,rho_out)
         f = lbm.streaming(f)
-        f = boundary.poiseuille_bounce_back(f,0)        
+        # Apply boundary        
+        f = boundary.f_rigid_wall(f,True,True,False,False)
+        # f = boundary.poiseuille_bounce_back(f,0)        
         velocity = lbm.calculate_velocity(f,rho)
         f, density, velocity = lbm.calculate_collision(f, relaxation)
         if save_every is not None and (not (step % save_every) and step!=0):
@@ -75,12 +77,10 @@ def poiseuille_simulation(rho_null, p_diff, output_dir, Nx, Ny, relaxation,steps
             axes[0].cla()
             axes[0].set_ylabel("Width of the channel")
             axes[0].set_xlabel("Velocity [m/s] in X direction")
-            x_val = velocity[1:-1, Nx//2,1]
-            # x_val = np.concatenate((np.array([0]),velocity[2:-2, Nx//2,1],np.array([0])))
-            y_val = np.arange(Ny)
-            # y_val = np.concatenate((np.array([0]),np.arange(1,Ny-1),np.array([50])))
-            axes[0].plot(x_val, y_val, color = 'g')            
-            # axes[0].plot(velocity[:,Nx//2,1], np.arange(Ny+2), color = 'g')
+            x_val = velocity[1:-1, Nx//2,1]            
+            y_val = np.arange(Ny)            
+            axes[0].plot(x_val, y_val, color = 'g')           
+            
             save_path = os.path.join(common_path, f'velocity_at{step}.png')
             axes[0].set_title('Poiseuille Flow with pressure gradient {}'.format(p_diff))
             analytical_value = analytical_poiseuille()       

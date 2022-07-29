@@ -78,7 +78,10 @@ def couette_flow_simulation(Nx: int, Ny: int, omega: float, output_dir: str, sav
         # Streaming, Bounceback and Collision
         f, density, velocity = lbm.calculate_collision(f, omega) 
         f = lbm.streaming(f)
-        f = boundary.couette_bounce_back(f,lid_vel,velocity)        
+        # Apply boundary
+        f = boundary.f_moving_wall(f,lid_vel)
+        f = boundary.f_rigid_wall(f,False,True,False,False)
+        # f = boundary.couette_bounce_back(f,lid_vel,velocity)        
            
 
         # Saving steps 
