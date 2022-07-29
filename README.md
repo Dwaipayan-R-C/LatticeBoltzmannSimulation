@@ -26,44 +26,7 @@ This project is developed for a course named - "High Performance Computing: Flui
     ![Sliding lid](results/Karman_vortex_animation.gif)
 
 
-# Directory Info
 
-├── init.py
-<<<<<<< HEAD
-├── lbm_common                      # lbm common files
-   ├── boundary.py 
-   ├── constant.py 
-   ├── lbm.py 
-├── simulattions                   # all files and folders regarding simulation and milestones
-   ├── plots                       # results of MPI code. Generated from codeplot.py
-   ├── sliding_lid_mpi             # MPI folder. Contains a standalone MPI running folder. 
-       ├── data                    
-       ├── jobFile.job             
-       ├── sliding_lid_mpi.py      
-   ├── codeplot.py                 # code for running the `.npy` plots output of BwUniCluster
-   ├── couette_flow.py             # Couette
-   ├── poiseuilleFlow.py           # Poiseuille
-   ├── shear_wave.py               # Shear Wave
-   └── sliding_lid.py              # Sliding Lid
-
-=======
-├── lbm_common                      
-│   ├── boundary.py 
-│   ├── constant.py 
-│   ├── lbm.py 
-├── simulattions                    
-│   ├── plots                       
-│   ├── sliding_lid_mpi             
-│       ├── data                    
-│       ├── jobFile.job             
-│       ├── sliding_lid_mpi.py      
-│   ├── codeplot.py                 
-│   ├── couette_flow.py             
-│   ├── poiseuilleFlow.py           
-│   ├── shear_wave.py               
-│   └── sliding_lid.py              
-└── ...
->>>>>>> 32b7a7d5a91e4e5be274a5e19d30557414e47998
 
 # Setup:
 ## Required libraries
