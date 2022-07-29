@@ -1,10 +1,6 @@
 # LatticeBoltzmannSimulation
 This project is developed for a course named - "High Performance Computing: Fluid Dynamics with Python" at University of Freiburg
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 32b7a7d5a91e4e5be274a5e19d30557414e47998
 
 # Experiments:
 1. Shear wave decay (Density and Velocity simulations)
