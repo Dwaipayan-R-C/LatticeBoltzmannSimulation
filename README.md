@@ -1,6 +1,9 @@
 # LatticeBoltzmannSimulation
 This project is developed for a course named - "High Performance Computing: Fluid Dynamics with Python" at University of Freiburg
 
+[![MPI Version](https://mpi4py.readthedocs.io/en/stable/)][MPI]
+[![All thanks to IMTEK Simulation](https://www.imtek.uni-freiburg.de/professuren/simulation/simulation)](https://www.imtek.uni-freiburg.de/professuren/simulation/simulation)
+
 # Experiments:
 1. Shear wave decay (Density and Velocity simulations)
     -> Density : We provide a sinusoidal density initialization along y direction and observe the density decay along time. We also observe the kinematic viscosity variations with omega (relaxation)
@@ -21,6 +24,26 @@ This project is developed for a course named - "High Performance Computing: Flui
     ![Sliding lid](results/Karman_vortex_animation.gif)
 
 
+# Directory Info
+.
+├── init.py
+├── lbm_common                      # lbm common files
+│   ├── boundary.py 
+│   ├── constant.py 
+│   ├── lbm.py 
+├── simulattions                    # all files and folders regarding simulation and milestones
+│   ├── plots                       # results of MPI code. Generated from codeplot.py
+│   ├── sliding_lid_mpi             # MPI folder. Contains a standalone MPI running folder. 
+│       ├── data                    
+│       ├── jobFile.job             
+│       ├── sliding_lid_mpi.py      
+│   ├── codeplot.py                 # code for running the `.npy` plots output of BwUniCluster
+│   ├── couette_flow.py             # Couette
+│   ├── poiseuilleFlow.py           # Poiseuille
+│   ├── shear_wave.py               # Shear Wave
+│   └── sliding_lid.py              # Sliding Lid
+└── ...
+
 # Setup:
 ## Required libraries
     1. Numpy
@@ -28,4 +51,6 @@ This project is developed for a course named - "High Performance Computing: Flui
     3. Scipy
 
 ## Entry point
-    init.py
+    init.py                         # serialized
+    sliding_lid_mpi.py                         # parallel
+

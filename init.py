@@ -87,7 +87,7 @@ def experiment_type(type):
         poiseuille.poiseuille_simulation(
             rho_null, p_diff, output_dir, Nx, Ny, omega, steps, save_every)
 
-    # Sliding lid settings
+    # Sliding lid serialized settings
     elif (type == CV.sliding_lid):
         Nx = 100
         Ny = 100
@@ -96,17 +96,7 @@ def experiment_type(type):
         re = 1000
         output_dir = 'results'
         save_every = 500
-        lid_velocity = 0.1
-
-        # request an MPI cluster with 4 engines
-        # with ipp.Cluster(engines='mpi', n=4) as rc:
-        #     # get a broadcast_view on the cluster which is best
-        #     # suited for MPI style computation
-        #     view = rc.broadcast_view()
-        #     # run the mpi_example function on all engines in parallel
-        #     r = view.apply_sync(sliding_lid.sliding_lid_simulation(Nx, Ny, re, output_dir, save_every, steps, lid_velocity))
-        #     # Retrieve and print the result from the engines
-        #     print("\n".join(r))
+        lid_velocity = 0.1        
         sliding_lid.sliding_lid_simulation(Nx, Ny, re, output_dir, save_every, steps, lid_velocity)
 
 """Define the experiemnt  category"""
