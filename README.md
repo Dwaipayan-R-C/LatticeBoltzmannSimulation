@@ -1,6 +1,10 @@
 # LatticeBoltzmannSimulation
 This project is developed for a course named - "High Performance Computing: Fluid Dynamics with Python" at University of Freiburg
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 32b7a7d5a91e4e5be274a5e19d30557414e47998
 
 # Experiments:
 1. Shear wave decay (Density and Velocity simulations)
@@ -23,8 +27,9 @@ This project is developed for a course named - "High Performance Computing: Flui
 
 
 # Directory Info
-.
+
 ├── init.py
+<<<<<<< HEAD
 ├── lbm_common                      # lbm common files
    ├── boundary.py 
    ├── constant.py 
@@ -41,6 +46,24 @@ This project is developed for a course named - "High Performance Computing: Flui
    ├── shear_wave.py               # Shear Wave
    └── sliding_lid.py              # Sliding Lid
 
+=======
+├── lbm_common                      
+│   ├── boundary.py 
+│   ├── constant.py 
+│   ├── lbm.py 
+├── simulattions                    
+│   ├── plots                       
+│   ├── sliding_lid_mpi             
+│       ├── data                    
+│       ├── jobFile.job             
+│       ├── sliding_lid_mpi.py      
+│   ├── codeplot.py                 
+│   ├── couette_flow.py             
+│   ├── poiseuilleFlow.py           
+│   ├── shear_wave.py               
+│   └── sliding_lid.py              
+└── ...
+>>>>>>> 32b7a7d5a91e4e5be274a5e19d30557414e47998
 
 # Setup:
 ## Required libraries
@@ -49,6 +72,6 @@ This project is developed for a course named - "High Performance Computing: Flui
     3. Scipy
 
 ## Entry point
-    init.py                         # serialized
-    sliding_lid_mpi.py                         # parallel
+    init.py                         
+    sliding_lid_mpi.py                         
 
