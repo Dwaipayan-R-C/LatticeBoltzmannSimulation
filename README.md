@@ -1,6 +1,7 @@
 # LatticeBoltzmannSimulation
 This project is developed for a course named - "High Performance Computing: Fluid Dynamics with Python" at University of Freiburg
 
+
 # Experiments:
 1. Shear wave decay (Density and Velocity simulations)
     -> Density : We provide a sinusoidal density initialization along y direction and observe the density decay along time. We also observe the kinematic viscosity variations with omega (relaxation)
@@ -21,6 +22,8 @@ This project is developed for a course named - "High Performance Computing: Flui
     ![Sliding lid](results/Karman_vortex_animation.gif)
 
 
+
+
 # Setup:
 ## Required libraries
     1. Numpy
@@ -28,4 +31,6 @@ This project is developed for a course named - "High Performance Computing: Flui
     3. Scipy
 
 ## Entry point
-    init.py
+    init.py                         
+    sliding_lid_mpi.py                         
+
