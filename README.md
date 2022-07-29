@@ -1,8 +1,6 @@
 # LatticeBoltzmannSimulation
 This project is developed for a course named - "High Performance Computing: Fluid Dynamics with Python" at University of Freiburg
 
-[![MPI Version](https://mpi4py.readthedocs.io/en/stable/)][MPI]
-[![All thanks to IMTEK Simulation](https://www.imtek.uni-freiburg.de/professuren/simulation/simulation)](https://www.imtek.uni-freiburg.de/professuren/simulation/simulation)
 
 # Experiments:
 1. Shear wave decay (Density and Velocity simulations)
