@@ -26,21 +26,21 @@ This project is developed for a course named - "High Performance Computing: Flui
 .
 ├── init.py
 ├── lbm_common                      # lbm common files
-│   ├── boundary.py 
-│   ├── constant.py 
-│   ├── lbm.py 
-├── simulattions                    # all files and folders regarding simulation and milestones
-│   ├── plots                       # results of MPI code. Generated from codeplot.py
-│   ├── sliding_lid_mpi             # MPI folder. Contains a standalone MPI running folder. 
-│       ├── data                    
-│       ├── jobFile.job             
-│       ├── sliding_lid_mpi.py      
-│   ├── codeplot.py                 # code for running the `.npy` plots output of BwUniCluster
-│   ├── couette_flow.py             # Couette
-│   ├── poiseuilleFlow.py           # Poiseuille
-│   ├── shear_wave.py               # Shear Wave
-│   └── sliding_lid.py              # Sliding Lid
-└── ...
+   ├── boundary.py 
+   ├── constant.py 
+   ├── lbm.py 
+├── simulattions                   # all files and folders regarding simulation and milestones
+   ├── plots                       # results of MPI code. Generated from codeplot.py
+   ├── sliding_lid_mpi             # MPI folder. Contains a standalone MPI running folder. 
+       ├── data                    
+       ├── jobFile.job             
+       ├── sliding_lid_mpi.py      
+   ├── codeplot.py                 # code for running the `.npy` plots output of BwUniCluster
+   ├── couette_flow.py             # Couette
+   ├── poiseuilleFlow.py           # Poiseuille
+   ├── shear_wave.py               # Shear Wave
+   └── sliding_lid.py              # Sliding Lid
+
 
 # Setup:
 ## Required libraries
