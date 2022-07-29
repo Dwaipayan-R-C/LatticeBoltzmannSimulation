@@ -1,8 +1,7 @@
 # LatticeBoltzmannSimulation
 This project is developed for a course named - "High Performance Computing: Fluid Dynamics with Python" at University of Freiburg
 
-[![MPI Version](https://mpi4py.readthedocs.io/en/stable/)][MPI]
-[![All thanks to IMTEK Simulation](https://www.imtek.uni-freiburg.de/professuren/simulation/simulation)](https://www.imtek.uni-freiburg.de/professuren/simulation/simulation)
+
 
 # Experiments:
 1. Shear wave decay (Density and Velocity simulations)
@@ -25,23 +24,23 @@ This project is developed for a course named - "High Performance Computing: Flui
 
 
 # Directory Info
-.
+
 ├── init.py
-├── lbm_common                      # lbm common files
+├── lbm_common                      
 │   ├── boundary.py 
 │   ├── constant.py 
 │   ├── lbm.py 
-├── simulattions                    # all files and folders regarding simulation and milestones
-│   ├── plots                       # results of MPI code. Generated from codeplot.py
-│   ├── sliding_lid_mpi             # MPI folder. Contains a standalone MPI running folder. 
+├── simulattions                    
+│   ├── plots                       
+│   ├── sliding_lid_mpi             
 │       ├── data                    
 │       ├── jobFile.job             
 │       ├── sliding_lid_mpi.py      
-│   ├── codeplot.py                 # code for running the `.npy` plots output of BwUniCluster
-│   ├── couette_flow.py             # Couette
-│   ├── poiseuilleFlow.py           # Poiseuille
-│   ├── shear_wave.py               # Shear Wave
-│   └── sliding_lid.py              # Sliding Lid
+│   ├── codeplot.py                 
+│   ├── couette_flow.py             
+│   ├── poiseuilleFlow.py           
+│   ├── shear_wave.py               
+│   └── sliding_lid.py              
 └── ...
 
 # Setup:
@@ -51,6 +50,6 @@ This project is developed for a course named - "High Performance Computing: Flui
     3. Scipy
 
 ## Entry point
-    init.py                         # serialized
-    sliding_lid_mpi.py                         # parallel
+    init.py                         
+    sliding_lid_mpi.py                         
 
