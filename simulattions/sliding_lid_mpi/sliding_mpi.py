@@ -206,32 +206,6 @@ def f_wall_parallel(f, coords, i):
         # if(i == 10):
         #     print(f"the rank for coord1x is {rank}")    
     return f
-def sliding_bounce_back(f,lid_vel,velocity):    
-
-    """Bounce back and lid velocity exerted here"""
-    rho_wall = (2 * (f[-1, 1:-1, 6] + f[-1, 1:-1, 2] + f[-1, 1:-1, 5]) + f[-1, 1:-1, 3] + f[-1, 1:-1, 0] + f[-1, 1:-1, 1])/(1+velocity[-1,1:-1,1])
-   
-    # Bottom wall
-    f[1,1:-1,2] = f[0,1:-1,4]
-    f[1,1:-1,5] = f[0,1:-1,7]
-    f[1,1:-1,6] = f[0,1:-1,8]
-
-    # Top wall
-    f[-2,1:-1,4] = f[-1,1:-1,2]
-    f[-2,1:-1,7] = f[-1,1:-1,5] - 1/6  * rho_wall * lid_vel
-    f[-2,1:-1,8] = f[-1,1:-1,6] + 1/6  * rho_wall*  lid_vel
-
-    # Right wall
-    f[1:-1,1,1] = f[1:-1,0,3]
-    f[1:-1,1,5] = f[1:-1,0,7]
-    f[1:-1,1,8] = f[1:-1,0,6]
-
-    # left wall
-    f[1:-1,-2,3] = f[1:-1,-1,1]
-    f[1:-1,-2,6] = f[1:-1,-1,8]
-    f[1:-1,-2,7] = f[1:-1,-1,5]
-    return f
-
 
 def sliding_lid_simulation(Nx: int, Ny: int, omega: float, save_every, steps, lid_vel, y_decomp, x_decomp):
     """ Calculates the sliding_lid flow for Nx by Ny D2Q9 lattice"""
@@ -263,8 +237,7 @@ def sliding_lid_simulation(Nx: int, Ny: int, omega: float, save_every, steps, li
         # Streaming, Bounceback and Collision
         f = f_comm1(f, CommCart)
         f = streaming(f)
-        f = f_wall_parallel(f, coords, step)
-        # f = sliding_bounce_back(f,lid_vel,velocity)
+        f = f_wall_parallel(f, coords, step)        
         f, density, velocity = calculate_collision(f, omega)    
         
         if (step%save_every == 0):
@@ -281,22 +254,13 @@ omega = float(sys.argv[5])#1000
 lid_vel = float(sys.argv[6])#0.1
 y_decomp = int(sys.argv[7])#1
 x_decomp = int(sys.argv[8])#1
-# print(sys.argv[1:]) 
-# steps = 50000
-# save_every = 1000
-# length = int(100)
-# width = int(100)
-# re = 1000
-# lid_vel = 0.1
-# y_decomp = 1
-# x_decomp = 1
+
 files = glob.glob('data/*')
 for j in files:
     try:
         os.remove(j)
     except:
-        pass
-        
+        pass        
 
 sliding_lid_simulation(length, width, omega, save_every, steps, lid_vel, y_decomp, x_decomp)
     
