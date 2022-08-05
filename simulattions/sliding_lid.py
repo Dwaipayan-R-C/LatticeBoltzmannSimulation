@@ -54,27 +54,28 @@ def sliding_lid_simulation(Nx: int, Ny: int, re: float, output_dir: str, save_ev
     velocity = np.zeros((Ny+2,Nx+2,2))
     f = lbm.calculate_equilibrium(density,velocity)
     
-        
+    relax_time = round(Nx * lid_vel/re, 2)
     # Iteration starts from here
     for step in range(steps):
         print(f'{step+1}//{steps}', end="\r")  
 
         # Streaming, Bounceback and Collision
         f = lbm.streaming(f)
-        f = boundary.sliding_bounce_back(f,lid_vel,velocity)
+        f = boundary.f_rigid_wall(f, False, True, True, True)
+        f = boundary.f_moving_wall(f,lid_vel)
         f, density, velocity = lbm.calculate_collision(f, omega)        
         
         # Saving steps 
         if save_every is not None and (not (step % save_every)) and step !=0:
             axes[0].cla()
             axes[0].set_ylabel("Width of grid (Y)")
-            axes[0].set_xlabel("Length of grid (X)")
+            axes[0].set_xlabel(f"Relaxation {relax_time}, Uw {lid_vel}")
             x, y = np.meshgrid(np.arange(Nx+2), np.arange(Ny+2)) 
             speed = np.sqrt(velocity[:, :, 0].T**2 + velocity[:, :, 1].T**2)           
             axes[0].streamplot(x, y, velocity[:, :, 1], velocity[:, :, 0], color=speed, cmap = plt.cm.jet)
             save_path = os.path.join(common_path, f'sliding_{step}.png')
             axes[0].set_title('Sliding lid flow with lid velocity {} and reynolds number {} after {} iteration'.format(lid_vel,re, step))
-            figs[0].savefig(save_path, bbox_inches='tight', pad_inches=0)            
+            figs[0].savefig(save_path, bbox_inches='tight', pad_inches=0.5)            
             sliding_lid_velocity_list.append(velocity)        
 
     # Animate the sliding_lid flow     

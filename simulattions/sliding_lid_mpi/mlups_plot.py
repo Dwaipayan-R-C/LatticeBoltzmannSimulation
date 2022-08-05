@@ -39,7 +39,7 @@ for file in data_files:
 # Plot structuring
 ax.legend(['200 x 200','400 x 400','600 x 600','800 x 800','1000 x 1000'])
 ax.set_title('MLups (seconds) vs No. of processes for different grid size')
-ax.grid()
+ax.grid(True,which="both")
 ax.set_xscale('log')
 ax.set_yscale('log')
 ax.set_xlabel('No. of processes')
