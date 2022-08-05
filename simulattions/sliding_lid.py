@@ -39,7 +39,7 @@ def sliding_lid_simulation(Nx: int, Ny: int, re: float, output_dir: str, save_ev
     def animate(velocity):
         """Creates density animation"""
         anim = animation.FuncAnimation(figs[1],visualize_sliding_lid,repeat=True,frames=len(sliding_lid_velocity_list), cache_frame_data = False)     
-        anim.save('{}/Karman_vortex_animation.gif'.format(output_dir),writer='imagemagic', fps=2)
+        anim.save('{}/sliding_animation.gif'.format(output_dir),writer='imagemagic', fps=2)
         
     # comm = MPI.COMM_WORLD
     # size = comm.Get_size()
