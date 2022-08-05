@@ -1,0 +1,24 @@
+lattices  decomp	steps	SECONDS	MLUPS
+800 1 10000  4947    1293713
+800 2 10000  925    6918918
+800 4 10000  273    23443223
+800 5 10000  222    28828828
+800 8 10000  83    77108433
+800 10 10000  55    116363636
+800 16 10000  35    182857142
+800 20 10000  29    220689655
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc1n[733-737,748-749,757,759,769,775,777,779,831-832]
+Job ID: 20962908
+Cluster: uc2
+User/Group: fr_dr255/fr_fr
+State: COMPLETED (exit code 0)
+Nodes: 15
+Cores per node: 56
+CPU Utilized: 10:51:29
+CPU Efficiency: 0.71% of 63-23:06:00 core-walltime
+Job Wall-clock time: 01:49:39
+Memory Utilized: 4.93 GB
+Memory Efficiency: 5.48% of 90.00 GB

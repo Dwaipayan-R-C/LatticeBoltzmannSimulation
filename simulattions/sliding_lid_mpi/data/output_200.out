@@ -1,0 +1,23 @@
+lattices  decomp	steps	SECONDS	MLUPS
+200 1 10000  161    2484472
+200 2 10000  46    8695652
+200 4 10000  22    18181818
+200 5 10000  19    21052631
+200 8 10000  23    17391304
+200 10 10000  23    17391304
+200 20 10000  19    21052631
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc1n[692-693,695-697,700,704-705,789,791,793,795,797-798,804]
+Job ID: 20962914
+Cluster: uc2
+User/Group: fr_dr255/fr_fr
+State: COMPLETED (exit code 0)
+Nodes: 15
+Cores per node: 56
+CPU Utilized: 01:35:50
+CPU Efficiency: 2.12% of 3-03:22:00 core-walltime
+Job Wall-clock time: 00:05:23
+Memory Utilized: 73.90 GB (estimated maximum)
+Memory Efficiency: 82.11% of 90.00 GB (6.00 GB/node)

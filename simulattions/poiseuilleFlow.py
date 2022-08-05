@@ -77,7 +77,7 @@ def poiseuille_simulation(rho_null, p_diff, output_dir, Nx, Ny, relaxation,steps
             axes[0].cla()
             axes[0].set_ylabel("Width of the channel")
             axes[0].set_xlabel("Velocity [m/s] in X direction")
-            x_val = velocity[1:-1, Nx//2,1]            
+            x_val = velocity[1:-1, 1,1]            
             y_val = np.arange(Ny)            
             axes[0].plot(x_val, y_val, color = 'g')           
             
@@ -93,12 +93,12 @@ def poiseuille_simulation(rho_null, p_diff, output_dir, Nx, Ny, relaxation,steps
             axes[0].plot(analytical_value, np.arange(len(analytical_value)),color='black', linestyle='dashed', label='Analytical')
             axes[0].legend(['Analytical','Simulated'])
             figs[0].savefig(save_path,  pad_inches=1)            
-            poiseuille_list.append(velocity[1:-1, Nx//2,1])
+            poiseuille_list.append(velocity[1:-1, 1,1])
         
 
     # visualize
     analytical_poiseuille()
-    animate(velocity,np.max(velocity[1:-1, Nx//2,1]))
+    animate(velocity,np.max(velocity[1:-1, 1,1]))
     x, y = np.meshgrid(np.arange(Nx+2), np.arange(Ny+2))
     save_density_path = os.path.join(common_path, f'density.png')
     ax3.scatter(x,y,c=density)
