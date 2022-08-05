@@ -1,5 +1,6 @@
 import numpy as np
 
+
 #opposite directions for bouncing back
 opposite_direction = np.array([0,3,4,1,2,7,8,5,6], dtype = np.int8)
 

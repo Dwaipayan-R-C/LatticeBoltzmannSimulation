@@ -14,7 +14,7 @@ from lbm_common import boundary as boundary
 
 
 def sliding_lid_simulation(Nx: int, Ny: int, re: float, output_dir: str, save_every, steps, lid_vel):
-    """ Calculates the sliding_lid flow for Nx by Ny D2Q9 lattice"""
+    """ Calculates the sliding_lid [SERIALIZED] flow for Nx by Ny D2Q9 lattice"""
 
     omega = (2*re)/(6*Nx*lid_vel+re)
     def visualize_sliding_lid(i):

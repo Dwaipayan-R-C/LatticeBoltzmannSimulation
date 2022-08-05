@@ -2,20 +2,21 @@
 This project is developed for a course named - "High Performance Computing: Fluid Dynamics with Python" at University of Freiburg. Python packages that's being used and considered as a required installation are [Numpy](https://numpy.org/), [Matplotlib](https://matplotlib.org/). Here, we have developed simulations for 5 fludic problems - Shear wave decay of fluid, Couette, Poiseuille flow and a sliding lid. Also, the sliding lid has been implemented parallely using [BwUniCluster](https://wiki.bwhpc.de/e/). To accomplish this course successfully, I cordially thank [IMTEK Simulation Department](https://www.imtek.uni-freiburg.de/professuren/simulation/simulation) to guide through the path. 
 
 
-[Report](https://github.com/Dwaipayan-R-C/LatticeBoltzmannSimulation/tree/main/results/Report) 
+[Report - High Performance Computing - Computational Fluid dynamics with Python](https://github.com/Dwaipayan-R-C/LatticeBoltzmannSimulation/tree/main/results/Report) 
 
 ## Folder Structure
     .
-    ├── lbm_common
-    ├── results                         # Test files (alternatively `spec` or `tests`)
-    ├── simulattions                    # Test files (alternatively `spec` or `tests`)
-    │   ├── plots                       # Load and stress tests
-    │   ├── sliding_lid_mpi             # End-to-end, integration tests (alternatively `e2e`)
-    │   |   ├── data                    # Unit tests
-    │   |   ├── jobfile.job             # Unit tests
-    │   |   └── ...             # Unit tests   
-    │   └── ...                 # Unit tests   
-    ├── init.py                 # Unit tests
+    ├── lbm_common                          # All common files 
+    ├── results                             # All simulation results saved
+    ├── simulattions                        # Experiment files
+    │   ├── plots                           # MPI Plot
+    │   ├── sliding_lid_mpi                 # MPI Sliding Lid code
+    │   |   ├── data                        # MPI data
+    │   |   ├── jobfile.job                 # Batch file to run in cluster
+    │   |   ├── sliding_lid_mpi.py          # MPI Sliding lid code
+    │   |   └── ...                                
+    │   └── ...                                    
+    ├── init.py                             # init file to run serialized simulaations
     └── ...     
 
 
@@ -24,7 +25,7 @@ This project is developed for a course named - "High Performance Computing: Flui
     -> Density : We provide a sinusoidal density initialization along y direction and observe the density decay along time. We also observe the kinematic viscosity variations with omega (relaxation)
     -> Velocity : We provide a sinusoidal velocity initialization and obsrve the density decay with time.
     
-    ![Shear wave decay - Density flow](results/Density_animation.gif ) 
+    ![Shear wave decay - Density flow](results/Density_animation.gif) 
 2. Couette Flow
     -> Couette flow means a hollow channel with upper lid/wall moving with a lid velocity while the bottom one being fixed. We here observe the flow of fluid inside the channel and how it meets the analytical expectations. 
     
