@@ -2,7 +2,7 @@
 This project is developed for a course named - "High Performance Computing: Fluid Dynamics with Python" at University of Freiburg. Python packages that's being used and considered as a required installation are [Numpy](https://numpy.org/), [Matplotlib](https://matplotlib.org/). Here, we have developed simulations for 5 fludic problems - Shear wave decay of fluid, Couette, Poiseuille flow and a sliding lid. Also, the sliding lid has been implemented parallely using [BwUniCluster](https://wiki.bwhpc.de/e/). To accomplish this course successfully, I cordially thank [IMTEK Simulation Department](https://www.imtek.uni-freiburg.de/professuren/simulation/simulation) to guide through the path. 
 
 
-[Report - High Performance Computing - Lattice Boltzmann with Python](https://github.com/Dwaipayan-R-C/LatticeBoltzmannSimulation/tree/main/results/Report) 
+[Report - High Performance Computing - Computational Fluid dynamics with Python](https://github.com/Dwaipayan-R-C/LatticeBoltzmannSimulation/tree/main/results/Report) 
 
 ## Folder Structure
     .
