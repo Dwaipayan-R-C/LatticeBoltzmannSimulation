@@ -1,7 +1,5 @@
 """Library Imports"""
-import os
 import sys
-import glob
 import numpy as np
 from mpi4py import MPI
 
@@ -108,7 +106,17 @@ def save_mpiio(comm, fn, g_kl):
     filetype.Free()
     file.Close()
 
+
 def moving_bounceback(f, lid_vel):
+    """
+    Function for the bounce back of moving wall
+    Args:
+        f : The spacial grid
+        lid_vel : moving wall lid velocity
+
+    Returns:
+        f: The spacial grid
+    """    
     rho_wall = (2 * (f[-1, 1:-1, 6] + f[-1, 1:-1, 2] + f[-1, 1:-1, 5]) + f[-1, 1:-1, 3] + f[-1, 1:-1, 0] + f[-1, 1:-1, 1])    
     f[-2,1:-1,4] = f[-1,1:-1,2]
     f[-2,1:-1,7] = f[-1,1:-1,5] - 1/6  * rho_wall * lid_vel
@@ -117,7 +125,19 @@ def moving_bounceback(f, lid_vel):
     return f
     
 def rigid_bounceback(f, top, down, left, right):
+    """
+    Bounce back function for rigid wall
 
+    Args:
+        f : The spacial grid
+        top : Top wall
+        down : Bottom wall
+        left : Left wall
+        right : Right wall
+
+    Returns:
+        f: The spacial grid
+    """
     if top:
         f[-2,:, [7,4,8]] = f[-1,:, [5,2,6]]
     if down:
@@ -129,7 +149,16 @@ def rigid_bounceback(f, top, down, left, right):
     return f
 
 def calculate_equilibrium(density, velocity, simulation = False):
-    """Calculates the collision equlibrium function Feq"""
+    """Calculates the collision equlibrium function Feq
+
+    Args:
+        density : density grid
+        velocity : velocity grid
+        simulation (bool, optional): this parameter is meant for sliding lid when in wall we have 2D array instead of 3D. Defaults to False.
+
+    Returns:
+        f_eq: Equilibrium funtion
+    """
     if(simulation == True):
         vel_x2_y2 = velocity[:,0] ** 2 + velocity[:,1] ** 2
         cu = np.dot(velocity,c.T)
@@ -144,7 +173,15 @@ def calculate_equilibrium(density, velocity, simulation = False):
     return f_eq
 
 def mpi_communicator(f, commCart):
-   
+    """This is the communication function that executes coordination amongst ranks
+
+    Args:
+        f : The spacial grid
+        commCart : Cartesian communication object that creates the ranks
+
+    Returns:
+        f: Cartesian decomposed spacial grid
+    """
     top_src, top_dst = commCart.Shift(0, -1)
     bot_src, bot_dst = commCart.Shift(0, +1)
     lef_src, lef_dst = commCart.Shift(1, -1)
@@ -173,7 +210,15 @@ def mpi_communicator(f, commCart):
     return f
 
 def bounceback_parallel(f, coords):
-   
+    """Conditions boundaries for the decomposed state
+    
+    Args:
+        f : The spatial grid
+        coords : Coordinates are usually in forms 0-0, 0-1 .. where first index denotes rows and second index denotes columns        
+
+    Returns:
+        f: The spatial grid after applying boundary conditions in decomposed state
+    """
     if (coords[0] == 0):
         f = rigid_bounceback(f, False, True, False, False)
 
@@ -191,6 +236,16 @@ def bounceback_parallel(f, coords):
     return f
 
 def edges(coords, rows, columns):
+    """Edges recovered for bounceback
+
+    Args:
+        coords : Coordinates are usually in forms 0-0, 0-1 .. where first index denotes rows and second index denotes columns 
+        rows : Rows of grid
+        columns : Columns of grid
+
+    Returns:
+        list: rows, columns
+    """
    
     if (coords[0] == 0):
         rows = rows + 1
@@ -205,49 +260,24 @@ def edges(coords, rows, columns):
         columns = columns + 1
         
     return rows, columns
+    
+def sliding_lid_simulation(Nx: int, Ny: int):
+     
+    """Calculates the sliding_lid flow for Nx by Ny D2Q9 lattice
 
-def sliding_bounce_back(f,lid_vel,velocity):    
-
-    """Bounce back and lid velocity exerted here"""
-    rho_wall = (2 * (f[-1, 1:-1, 6] + f[-1, 1:-1, 2] + f[-1, 1:-1, 5]) + f[-1, 1:-1, 3] + f[-1, 1:-1, 0] + f[-1, 1:-1, 1])/(1+velocity[-1,1:-1,1])
-   
-    # Bottom wall
-    f[1,1:-1,2] = f[0,1:-1,4]
-    f[1,1:-1,5] = f[0,1:-1,7]
-    f[1,1:-1,6] = f[0,1:-1,8]
-
-    # Top wall
-    f[-2,1:-1,4] = f[-1,1:-1,2]
-    f[-2,1:-1,7] = f[-1,1:-1,5] - 1/6  * rho_wall * lid_vel
-    f[-2,1:-1,8] = f[-1,1:-1,6] + 1/6  * rho_wall*  lid_vel
-
-    # Right wall
-    f[1:-1,1,1] = f[1:-1,0,3]
-    f[1:-1,1,5] = f[1:-1,0,7]
-    f[1:-1,1,8] = f[1:-1,0,6]
-
-    # left wall
-    f[1:-1,-2,3] = f[1:-1,-1,1]
-    f[1:-1,-2,6] = f[1:-1,-1,8]
-    f[1:-1,-2,7] = f[1:-1,-1,5]
-    return f
-
-def sliding_lid_simulation(Nx: int, Ny: int, omega: float, save_every, steps, lid_vel, y_decomp, x_decomp):
-    """ Calculates the sliding_lid flow for Nx by Ny D2Q9 lattice"""
-
-    # omega = (2*re)/(6*Nx*lid_vel+re)          
+    Args:
+        Nx : Coordinates are usually in forms 0-0, 0-1 .. where first index denotes rows and second index denotes columns 
+        Ny : Rows of grid       
+    
+    """  
     comm = MPI.COMM_WORLD
     size = comm.Get_size()
     rank = comm.Get_rank()
 
-    CommCart = comm.Create_cart((y_decomp, x_decomp), periods=(False, False), reorder=False)    
-    
-    #print("The rank is: {} and the coordinate is: {} ".format(rank, CommCart.Get_coords(rank)))
+    CommCart = comm.Create_cart((y_decomp, x_decomp), periods=(False, False), reorder=False)
     coords = CommCart.Get_coords(rank)
-    # """ Calculates the sliding_lid flow for Nx by Ny D2Q9 lattice"""    
-
-    # # """Starts from here"""
-    # # # initilization of the grids used    
+    
+    # Calculates the sliding_lid flow for Nx by Ny D2Q9 lattice    
     rows = Ny // y_decomp + 2
     columns = Nx // x_decomp + 2
     rows, columns = edges(coords, rows, columns)
@@ -255,24 +285,21 @@ def sliding_lid_simulation(Nx: int, Ny: int, omega: float, save_every, steps, li
     velocity = np.zeros((rows,columns,2))
     f = calculate_equilibrium(density,velocity)
     
-        
     # # Iteration starts from here
-    for step in range(steps):
-        #print(f'{step+1}//{steps}', end="\r")  
+    for step in range(steps):        
 
         # Streaming, Bounceback and Collision
         f = mpi_communicator(f, CommCart)
         f = streaming(f)
-        f = bounceback_parallel(f, coords)
-        # f = sliding_bounce_back(f,lid_vel,velocity)
+        f = bounceback_parallel(f, coords)        
         f, density, velocity = calculate_collision(f, omega)    
         
+        # Saves the data in .nx and .ny file
         if (step%save_every == 0):
             save_mpiio(CommCart, f'data/lattices_{Nx}_decomp_{x_decomp}_ux_{step}.npy', velocity[:,:,1])
             save_mpiio(CommCart, f'data/lattices_{Nx}_decomp_{x_decomp}_uy_{step}.npy', velocity[:,:,0])
 
       
-
 steps = int(sys.argv[2])
 save_every = 1000
 length = int(sys.argv[1])
@@ -292,5 +319,5 @@ for file in files:
         pass
 '''
 
-sliding_lid_simulation(length, width, omega, save_every, steps, lid_vel, y_decomp, x_decomp)
+sliding_lid_simulation(length, width)
     

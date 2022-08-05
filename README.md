@@ -29,7 +29,7 @@ This project is developed for a course named - "High Performance Computing: Flui
 2. Couette Flow
     -> Couette flow means a hollow channel with upper lid/wall moving with a lid velocity while the bottom one being fixed. We here observe the flow of fluid inside the channel and how it meets the analytical expectations. 
     
-    ![Couette flow](https://github.com/Dwaipayan-R-C/LatticeBoltzmannSimulation/blob/main/results/Couette_animation.gif =100x100)
+    ![Couette flow](results/Couette_animation.gif)
 3. Poiseuille Flow
     -> Poiseuille flow is triggered by the pressure gradient along x direction (Inlet higher and outlet lower) and we here provide a small pressure difference along inlet outlet to observe the flow. Fortunately, here as well we have an analytical solution to match our simulation results with. 
     
