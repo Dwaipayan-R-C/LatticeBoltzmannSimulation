@@ -33,9 +33,9 @@ fig.suptitle("Sliding lid with omega = {}, processes = {}, lid vel = {} and reyn
 
 for itx in range(0, 10, 1):
         ax = plt.subplot(2,5,i)
-        ax.set_title("iteration: {}".format(itx))
-        ax.set_xlabel("length")
-        ax.set_ylabel("width")
+        ax.set_title("iteration: {}".format(itx*1000))
+        ax.set_xlabel("Length")
+        ax.set_ylabel("Width")
         ax.set_xlim(0,nx)
         ax.set_ylim(0,ny)
         #ax.invert_yaxis()

@@ -89,19 +89,19 @@ def experiment_type(type):
 
     # Sliding lid serialized settings
     elif (type == CV.sliding_lid):
-        Nx = 100
-        Ny = 100
-        steps = 20001
+        Nx = 150
+        Ny = 150
+        steps = 10001
         rho_null = 1
-        re = 1000
+        re = 300
         output_dir = 'results'
-        save_every = 500
+        save_every = 2000
         lid_velocity = 0.1        
         sliding_lid.sliding_lid_simulation(Nx, Ny, re, output_dir, save_every, steps, lid_velocity)
 
 """Define the experiemnt  category"""
 if __name__ == "__main__":
     # 'shear_wave', 'couette_flow', 'poiseuille_flow', 'sliding_lid'
-    experiment_type("poiseuille_flow")
+    experiment_type("sliding_lid")
 
 #

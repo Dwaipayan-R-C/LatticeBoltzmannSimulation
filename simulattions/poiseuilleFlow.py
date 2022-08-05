@@ -67,8 +67,7 @@ def poiseuille_simulation(rho_null, p_diff, output_dir, Nx, Ny, relaxation,steps
         rho, velocity, f =lbm.periodic_boundary_with_pressure_variations(f,rho_in,rho_out)
         f = lbm.streaming(f)
         # Apply boundary        
-        f = boundary.f_rigid_wall(f,True,True,False,False)
-        # f = boundary.poiseuille_bounce_back(f,0)        
+        f = boundary.f_rigid_wall(f,True,True,False,False)               
         velocity = lbm.calculate_velocity(f,rho)
         f, density, velocity = lbm.calculate_collision(f, relaxation)
         if save_every is not None and (not (step % save_every) and step!=0):

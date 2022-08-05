@@ -21,6 +21,6 @@ sliding_lid = 'sliding_lid'
 
 
 """Plot Global settings"""
-fontsize = 9
+fontsize = 11
 fontfamily = 'Cambria'
 
