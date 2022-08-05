@@ -12,6 +12,16 @@ def density_calculation(f):
 
 
 def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):
+    """For poiseuille PBC is required 
+
+    Args:
+        grid : F - The spacial grid
+        rho_in : Inlet density
+        rho_out : Outlet density
+
+    Returns:
+        density,velocity, f: density,velocity, f of the grid
+    """
     rho = density_calculation(grid)
     velocity = calculate_velocity(grid,rho)
     # overall equilibrium

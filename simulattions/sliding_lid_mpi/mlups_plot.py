@@ -1,13 +1,19 @@
 
+"""Imports"""
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+
+"""Code runs"""
+# plt info and directory management
 data_files = ['output_200.out','output_400.out','output_600.out','output_800.out','output_1000.out']
 cuurent_dir = os.getcwd()
 save_path = os.path.join(cuurent_dir,'simulattions\\sliding_lid_mpi\\data')
 input_file = os.path.join(save_path,)
 plt.rcParams["figure.figsize"] = (10,5.5)
 fig,ax = plt.subplots()
+
+# Runs through all the files
 for file in data_files:
     with open(os.path.join(save_path,f'{file}'))as f:
         lines = f.readlines()
@@ -29,9 +35,10 @@ for file in data_files:
     grid_len = grid_array[:,0]
     processes = grid_array[:,1]**2
     ax.plot(processes,ml_ups, '-o')
+    
+# Plot structuring
 ax.legend(['200 x 200','400 x 400','600 x 600','800 x 800','1000 x 1000'])
 ax.set_title('MLups (seconds) vs No. of processes for different grid size')
-
 ax.grid()
 ax.set_xscale('log')
 ax.set_yscale('log')

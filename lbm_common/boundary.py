@@ -5,6 +5,15 @@ from lbm_common import lbm
 
 
 def f_moving_wall(f, lid_vel):
+    """
+    Function for the bounce back of moving wall
+    Args:
+        f : The spacial grid
+        lid_vel : moving wall lid velocity
+
+    Returns:
+        f: The spacial grid
+    """
     rho_wall = (2 * (f[-1, 1:-1, 6] + f[-1, 1:-1, 2] + f[-1, 1:-1, 5]) + f[-1, 1:-1, 3] + f[-1, 1:-1, 0] + f[-1, 1:-1, 1])    
     f[-2,1:-1,4] = f[-1,1:-1,2]
     f[-2,1:-1,7] = f[-1,1:-1,5] - 1/6  * rho_wall * lid_vel
@@ -13,7 +22,19 @@ def f_moving_wall(f, lid_vel):
     return f
     
 def f_rigid_wall(f, top, down, left, right):
+    """
+    Bounce back function for rigid wall
 
+    Args:
+        f : The spacial grid
+        top : Top wall
+        down : Bottom wall
+        left : Left wall
+        right : Right wall
+
+    Returns:
+        f: The spacial grid
+    """
     if top:
         f[-2,:, [7,4,8]] = f[-1,:, [5,2,6]]
     if down:
