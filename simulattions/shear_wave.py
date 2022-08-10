@@ -75,8 +75,7 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
         print(f'{step+1}//{steps}', end="\r")
         f = lbm.streaming(f)
         f, density, velocity = lbm.calculate_collision(f, omega)
-        # max_min_list.append(np.max(velocity[:, Nx//2, 1]))
-        if save_every is not None and (not (step % save_every) or step == steps - 1):
+        if step%save_every==0:
             density_animation.append(density) #if density flow is to be observed
             path = os.path.join(common_path, f'decay_{exp_type}')
             os.makedirs(path, exist_ok=True)
@@ -104,32 +103,32 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
                 # 2. Save the sin flow of density at a point            
                 axes[0].cla()
                 axes[0].set_ylim([-eps + 1, eps + 1])
-                axes[0].plot(np.arange(Nx), density[Ny//2, :])
+                axes[0].plot(np.arange(Nx), density[Ny//4, :])
                 axes[0].set_xlabel('X Position')
-                axes[0].set_ylabel(f'Density ρ (x,y = {Ny//2})')
+                axes[0].set_ylabel(f'Density ρ (x,y = {Ny//4})')
                 save_path = os.path.join(path, f'density_decay_{step}.png')
                 axes[0].grid()  
                 figs[0].savefig(save_path,  pad_inches=1)
                 
 
             else:                
-            #     # 2. Save the sin flow of velocity at a point 
-                axes[0].cla()
-                axes[0].set_ylim([-eps, eps])
-                axes[0].plot(np.arange(Ny), velocity[:, Nx//2, 1])
-                axes[0].set_xlabel('Y Position')                    
-                axes[0].set_ylabel(f'Velocity u(x = {Nx//2},y)')                         
-                save_path = os.path.join(path, f'velocity_decay_{step}.png')
-                axes[0].grid()  
-                figs[0].savefig(save_path,  pad_inches=1)
+                # 2. Save the sin flow of velocity at a point 
                 
+                axes[0].set_ylim([-eps, eps])
+                axes[0].plot(np.arange(Ny), velocity[:, Nx//4, 1])
+                axes[0].set_xlabel('Y Position')                    
+                axes[0].set_ylabel(f'Velocity u(x = {Nx//4},y)')
+                axes[0].grid()  
+                
+        
+              
         
         """Calculate Theoretical Velocity"""
         if (exp_type == CV.velocity):
             kinematic_viscosity = 1/3*(1/omega-1/2)
             y_val = instant_theoretical_velocity(kinematic_viscosity)
-            y_val = y_val*(v_not[:, Nx//2, 1])
-            v_not[:, Nx//2, 1] = y_val
+            y_val = y_val*(v_not[:, Nx//4, 1])
+            v_not[:, Nx//4, 1] = y_val
             theoretical_velocity.append(y_val.max())   
 
                 
@@ -139,17 +138,19 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
             max_min_list.append(np.min(velocity[:, :, 1]))
             x_value.append(step)
         else:            
-            den_or_vel.append(density[Ny//2,Nx//2]-1)
+            den_or_vel.append(density[Ny//4,Nx//4]-1)
             den_or_vel_list.append(np.max(density - 1))
             max_min_list.append(np.min(density - 1))
             x_value.append(step)
-            
+        
     """View animation of density flow"""
     if(exp_type == CV.density):
         animate(density_animation)
 
     """View Sinusoidal Decay over total time"""
     if exp_type == CV.velocity:
+        save_path = os.path.join(path, f'velocity_decay_{step}.png')
+        figs[0].savefig(save_path,  pad_inches=1)   
         x = np.arange(steps)
         axes[2].cla()
         axes[2].set_xlim([0,len(x)])
@@ -164,7 +165,7 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
         axes[2].plot(x, theoretical_velocity, color = 'black',linestyle='dotted',  linewidth=3)   
         axes[2].fill_between(X_,Y_,Y_1, color = "blue", alpha=.2)           
         axes[2].set_xlabel('Time evolution')
-        axes[2].set_ylabel(f'Velocity at (y = {Ny//2})')
+        axes[2].set_ylabel(f'Velocity at (y = {Ny//4})')
         axes[2].legend(
             ['Simulated Maxima','Simulated Minima', 'Analytical ux(y=25)']) 
         axes[2].grid()       
@@ -179,7 +180,7 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
         x_value_t = np.arange(len(den_or_vel))        
         axes[2].plot(x_value_t, den_or_vel, color='blue')       
         axes[2].set_xlabel(f'Timestep (ω = {omega})')
-        axes[2].set_ylabel(f'Density ρ (x = {Nx//2}, y = {Ny//2}')       
+        axes[2].set_ylabel(f'Density ρ (x = {Nx//4}, y = {Ny//4}')       
         
         save_path = os.path.join(path, f'omega_{omega}.png')
         axes[2].grid()  
