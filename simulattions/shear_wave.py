@@ -139,7 +139,7 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
             max_min_list.append(np.min(velocity[:, :, 1]))
             x_value.append(step)
         else:            
-            den_or_vel.append(density[Ny//2,Nx//2] - 1)
+            den_or_vel.append(density[Ny//2,Nx//2]-1)
             den_or_vel_list.append(np.max(density - 1))
             max_min_list.append(np.min(density - 1))
             x_value.append(step)
@@ -172,21 +172,21 @@ def shear_wave_simulation(Nx: int, Ny: int, omega: float, eps: float, output_dir
         figs[2].savefig(save_path,  pad_inches=1)
         
     else:
-        x_value_t = np.arange(len(den_or_vel_list))        
-        axes[2].plot(x_value_t, den_or_vel_list, color='blue')
         den_or_vel_list = np.array(den_or_vel_list)
         x = argrelextrema(den_or_vel_list, np.greater)[0]
-        axes[2].plot(x_value_t[x], den_or_vel_list[x],
-                     color='black', linestyle='dotted', linewidth = 3)
-        axes[2].legend(['Simulated', 'Simulated Maxima'])
-        axes[2].set_xlabel(f'Timestep (ω = {omega})')
-        axes[2].set_ylabel(f'Density ρ (x = {Nx//2}, y = {Ny//2}')        
         den_or_vel_list = den_or_vel_list[x]
+        
+        x_value_t = np.arange(len(den_or_vel))        
+        axes[2].plot(x_value_t, den_or_vel, color='blue')       
+        axes[2].set_xlabel(f'Timestep (ω = {omega})')
+        axes[2].set_ylabel(f'Density ρ (x = {Nx//2}, y = {Ny//2}')       
+        
         save_path = os.path.join(path, f'omega_{omega}.png')
         axes[2].grid()  
-        figs[2].savefig(save_path,  pad_inches=1)
+        figs[2].savefig(save_path, bbox_inches='tight', pad_inches=0.5)
 
     """Kinematic Viscosity Calculation Analytical vs Simulation via curve fit"""
+    
     simulated_viscosity = curve_fit(decay_perturbation, xdata=x, ydata=den_or_vel_list)[0][0]
     analytical_viscosity = (1/3) * ((1/omega) - 0.5)
 
