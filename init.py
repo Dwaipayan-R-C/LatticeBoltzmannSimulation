@@ -28,12 +28,12 @@ def experiment_type(type):
         Nx = 50
         Ny = 50
         omega = 1
-        eps = 0.01
+        eps = 0.1
         output_dir = 'results'
-        save_every = 100
-        simulation_type = 'velocity'  # density/ velocity
-        steps = 2000
-        # Please turn off all the plots inside shear wave decay
+        save_every = 200
+        simulation_type = 'density'  # density/ velocity
+        steps = 3000
+        # Please turn off all the plots inside shear wave decay if kinematic_vs_analytical = True
         kinematic_vs_analytical = False
 
         # region kinematic viscosity vs analytical viscosity
@@ -102,6 +102,6 @@ def experiment_type(type):
 """Define the experiemnt  category"""
 if __name__ == "__main__":
     # 'shear_wave', 'couette_flow', 'poiseuille_flow', 'sliding_lid'
-    experiment_type("sliding_lid")
+    experiment_type("shear_wave")
 
 #
