@@ -26,15 +26,15 @@ This project is developed for a course named - "High Performance Computing: Flui
     b. Velocity : We provide a sinusoidal velocity initialization and obsrve the density decay with time.
     
     ![Shear wave decay - Density flow](results/Density_animation.gif) 
-2. Couette Flow:
+2. Couette Flow:<br/>
     Couette flow means a hollow channel with upper lid/wall moving with a lid velocity while the bottom one being fixed. We here observe the flow of fluid inside the channel and how it meets the analytical expectations. 
     
     ![Couette flow](results/Couette_animation.gif)
-3. Poiseuille Flow:
+3. Poiseuille Flow:<br/>
     Poiseuille flow is triggered by the pressure gradient along x direction (Inlet higher and outlet lower) and we here provide a small pressure difference along inlet outlet to observe the flow. Fortunately, here as well we have an analytical solution to match our simulation results with. 
     
     ![Poiseuille flow](results/Poiseuille_animation.gif)
-4. Sliding Lid:
+4. Sliding Lid:<br/>
     Sliding lid has a part of couette flow feature where we have the top wall moving ith right and left wall providing periodic bouceback. The bottom wall is rigid as well. 
     
     ![Sliding lid](results/sliding_animation.gif)
