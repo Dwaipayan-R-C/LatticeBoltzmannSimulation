@@ -21,8 +21,8 @@ This project is developed for a course named - "High Performance Computing: Flui
 
 
 ## Experiments:
-1. Shear wave decay (Density and Velocity simulations):
-    a. Density : We provide a sinusoidal density initialization along y direction and observe the density decay along time. We also observe the kinematic viscosity variations with omega (relaxation)
+1. Shear wave decay (Density and Velocity simulations): <br/>
+    a. Density : We provide a sinusoidal density initialization along y direction and observe the density decay along time. We also observe the kinematic viscosity variations with omega (relaxation)<br/>
     b. Velocity : We provide a sinusoidal velocity initialization and obsrve the density decay with time.
     
     ![Shear wave decay - Density flow](results/Density_animation.gif) 
